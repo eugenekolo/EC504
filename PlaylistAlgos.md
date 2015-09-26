@@ -8,7 +8,7 @@
 
 
 Bulk of the work is done when you add/delete a playlist.  
-Special thought is put into keeping (3) highly responsive, as users are probably alright/more understanding with adding a 100 playlists taking a longer time. Non-responsive autocomplete is awful.
+Special thought is put into keeping (2) highly responsive, as users are probably alright/more understanding with adding a 100 playlists taking a longer time. Non-responsive autocomplete is awful.
 
 Memory is considered lastly, as applications these days take up 200MB+ and nobody bats an eye. A playlist app can easily use 10MB and be fine.
 
