@@ -7,20 +7,15 @@
     <meta name="description" content="">
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-    
     <title>Al Gore Rhythms</title>
-    
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
-    
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
     <link href="assets/css/index.css" rel="stylesheet">
-
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -30,7 +25,7 @@
 
 <body>
     <section id="container">
-      <!-- **********************************************************************************************************************************************************
+        <!-- **********************************************************************************************************************************************************
       TOP BAR CONTENT & NOTIFICATIONS
       *********************************************************************************************************************************************************** -->
         <!--header start-->
@@ -100,12 +95,14 @@
                             <textarea class="form-control" rows="5" id="comment"></textarea>
                         </div> -->
                         <br>
-                        <select multiple size="5" class="form-control">
-                            <option>0</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
+                        <select overflow="hidden" multiple size="5" class="form-control">
+                            <div class="table-alignment">
+                                    <option class="multiple-select">0 (Suggested Playlist)</option>
+                                    <option class="multiple-select">1 (Most Popular autocomplete)</option>
+                                    <option class="multiple-select">2 (Second Most Popular autocomplete)</option>
+                                    <option class="multiple-select">3 (Third Most Popular autocomplete)</option>
+                                    <option class="multiple-select">4 (Least Most Popular autocomplete)</option>
+                            </div>
                         </select>
                     </div>
                     <!-- /row -->
@@ -163,7 +160,6 @@
                                             <td>Mark</td>
                                             <td>Otto</td>
                                         </tr>
-
                                     </tbody>
                                 </table>
                             </div>
