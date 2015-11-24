@@ -79,13 +79,10 @@
             <div class="row mt">
               <div class="col-lg-12">
                   <div class="form-panel">
-                      <form class="form-horizontal tasi-form" method="">
-                          <div class="form-group">
-                              <div class="col-sm-10">
-                                  <input type="text" class="form-control" placeholder="Add playlist..."/>
-                              </div>
-                          </div>
-                      </form>
+                      <div class="col-sm-8">
+                          <input id="playlistInput" type="text" class="form-control" placeholder="Add playlist..."/>
+                      </div>
+                      <button id="uploadStringBtn" type="button" class="btn btn-theme">Upload!</button>
                   </div>
               </div><!-- col-lg-12-->       
             </div><!-- /row -->   
@@ -123,7 +120,7 @@
   <script src="assets/js/bootstrap-switch.js"></script>
   <script src="assets/js/jquery.tagsinput.js"></script>
   <script type="text/javascript" src="assets/js/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
-  <script src="assets/js/form-component.js"></script>
+
   <!-- TODO(eugenek): Move logic out of this file. -->
   <script>
 
@@ -133,7 +130,7 @@
     /**
     * This onClick submits a file to the backend
     * @note: No validation of the files is done
-    * @todo: Add validation.
+    * TODO(eugenek): Add validation.
     */
     $("#uploadFileBtn").click(function () {
       var file = $('#chooseFileBtn').prop('files')[0]; // Only one file
@@ -160,6 +157,26 @@
           });
       });    
     }); // END uploadFileBtn click handler
+
+    $("#uploadStringBtn").click(function () {
+      var data = {};
+      data['uploadString'] = $('#playlistInput').value; // This is a hack to let us use teh same route as uploadFile
+
+      $.ajax({
+          type: 'POST',
+          url: '/addPlaylist',
+          data: JSON.stringify(data),
+          dataType: "text",
+          contentType: 'application/json',
+          processData: false,
+          success: function (data) {
+            // TODO(eugenek): Add here.
+          },
+          error: function (data) {
+            // TODO(eugenek): Add here.
+          }
+       });  
+    }); // END uploadFileB
 
 
     /*************************************
