@@ -30,23 +30,19 @@
 
 <body>
   <section id="container">
-      <!-- **********************************************************************************************************************************************************
+      <!-- ****************************************************************************************************
       TOP BAR CONTENT & NOTIFICATIONS
-      *********************************************************************************************************************************************************** -->
-      <!--header start-->
+      ***************************************************************************************************** -->
       <header class="header black-bg">
               <div class="sidebar-toggle-box">
                   <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
               </div>
-            <!--logo start-->
             <a href="index.html" class="logo"><b>Al Gore Rhythms</b></a>
-            <!--logo end-->
       </header>
-      <!--header end-->
       
-      <!-- **********************************************************************************************************************************************************
+      <!-- ****************************************************************************************************
       MAIN SIDEBAR MENU
-      *********************************************************************************************************************************************************** -->
+      ***************************************************************************************************** -->
       <!--sidebar start-->
       <aside>
         <div id="sidebar" class="nav-collapse ">
@@ -71,9 +67,9 @@
       </aside>
       <!--sidebar end-->
       
-      <!-- **********************************************************************************************************************************************************
+      <!-- ****************************************************************************************************
       MAIN CONTENT
-      *********************************************************************************************************************************************************** -->
+      ***************************************************************************************************** -->
       <!--main content start-->
       <section id="main-content">
           <section class="wrapper">
@@ -97,13 +93,11 @@
             <div class="row mt">
               <div class="col-xs-6">
                 <div class="form-panel">
-                  <form class="form-inline" role="form">
-                    <div class="form-group">
-                        <input type="file" class="btn btn-theme" name="upload" />
-                        </br>
-                        <input type="submit" class="btn btn-theme" placeholder="Add" />
+                  <!-- UPLOAD FILE -->
+                    <div class="btn-group">
+                      <input id="chooseFileBtn" type="file" class="btn btn-theme"/>
+                      <button id="uploadFileBtn" type="button" class="btn btn-theme">Upload!</button>
                     </div>
-                  </form>
                 </div>
               </div>
             </div>
@@ -127,14 +121,64 @@
   <!--script for this page-->
   <script src="assets/js/jquery-ui-1.9.2.custom.min.js"></script>
   <script src="assets/js/bootstrap-switch.js"></script>
-  <script src="assets/js/jquery.tagsinput.js"></script>    
+  <script src="assets/js/jquery.tagsinput.js"></script>
   <script type="text/javascript" src="assets/js/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
-  <script src="assets/js/form-component.js"></script>    
+  <script src="assets/js/form-component.js"></script>
+  <!-- TODO(eugenek): Move logic out of this file. -->
   <script>
-      //custom select box
-      $(function(){
-          $('select.styled').customSelect();
-      });
+
+    /*************************************
+    * Click handlers
+    **************************************/
+    /**
+    * This onClick submits a file to the backend
+    * @note: No validation of the files is done
+    * @todo: Add validation.
+    */
+    $("#uploadFileBtn").click(function () {
+      var file = $('#chooseFileBtn').prop('files')[0]; // Only one file
+
+      // You got me so high, so high I cannot feel the fire. And you keep telling me that you'll be sweet.
+      // As long as I don't break these... promises...
+      var data = {}; // 
+      var promise = promiseFileContents(file, data);
+
+      $.when(promise).then(function (contents) {
+          $.ajax({
+              type: 'POST',
+              url: '/addPlaylist',
+              data: JSON.stringify(data),
+              dataType: "text",
+              contentType: 'application/json',
+              processData: false,
+              success: function (data) {
+                // TODO(eugenek): Add here.
+              },
+              error: function (data) {
+                // TODO(eugenek): Add here.
+              }
+          });
+      });    
+    }); // END uploadFileBtn click handler
+
+
+    /*************************************
+    * Helper functions
+    **************************************/
+    function promiseFileContents(file, dst) {
+      var promise = $.Deferred(function(dfd) {
+          var reader = new FileReader();  
+          reader.onload = function(event) {  
+              var text = event.target.result;
+              dst[file.name] = text;
+              dfd.resolve(text);
+          };
+          reader.readAsText(file, "UTF-8");
+      }).promise();
+
+      return promise;
+    };
+
   </script>
 
 </body>
