@@ -160,7 +160,7 @@
 
     $("#uploadStringBtn").click(function () {
       var data = {};
-      data['uploadString'] = $('#playlistInput').value; // This is a hack to let us use teh same route as uploadFile
+      data['uploadString'] = $('#playlistInput').val(); // This is a hack to let us use teh same route as uploadFile
 
       $.ajax({
           type: 'POST',
