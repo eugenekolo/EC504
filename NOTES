@@ -1,7 +1,10 @@
 # Some notes to developers
 
+## Backend
 `brew install gradle` will install gradle on OSX.
 `gradle wrapper` will install the wrapper. Perhaps not necessary.
 Run `./build.sh` to build the project.
 Run `./run.sh` to run the project.
+Source code is located in `/backend/src/main/java`
+
 

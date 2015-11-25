@@ -1,7 +1,7 @@
 #!/bin/sh
 # Builds the backend.
 
-gradle clean
-gradle build
-gradle shadowJar
+./gradlew clean
+./gradlew build
+./gradlew shadowJar
 
