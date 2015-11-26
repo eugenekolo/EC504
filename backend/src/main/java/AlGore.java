@@ -31,7 +31,10 @@ public class AlGore {
         post("/api/addPlaylist", (req, res) -> {
             String body = req.body();
 
-            return toJson(body);
+            // TODO(eugenek): For bringup right now
+            res.status(200);
+            res.body("Successfully added playlists");
+            return toJson(res);
         });
 
         /** GET /api/getTop8
@@ -44,7 +47,18 @@ public class AlGore {
         get("/api/getTop8", (req, res) -> {
             String body = req.body();
 
-            return "[GET] getTop8";
+            HashMap top8 = new HashMap<String, String>();
+            // TODO(eugenek): For bringup right now
+            top8.put("1", "TestSong_1");
+            top8.put("2", "TestSong_2");
+            top8.put("3", "TestSong_3");
+            top8.put("4", "TestSong_4");
+            top8.put("5", "TestSong_5");
+            top8.put("6", "TestSong_6");
+            top8.put("7", "TestSong_7");
+            top8.put("8", "TestSong_8");
+
+            return toJson(top8);
         });
 
         /** GET /api/getAutocomplete

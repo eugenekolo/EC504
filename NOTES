@@ -6,5 +6,3 @@
 Run `./build.sh` to build the project.
 Run `./run.sh` to run the project.
 Source code is located in `/backend/src/main/java`
-
-
