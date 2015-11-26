@@ -1,14 +1,26 @@
+package algore;
+
 import spark.ModelAndView;
 import spark.template.mustache.MustacheTemplateEngine;
 import static spark.Spark.*;
-import java.util.Map;
 import java.util.HashMap;
 import com.google.gson.Gson;
 
 public class AlGore {
-    //public static MustacheTemplateEngine mustache = new MustacheTemplateEngine("../frontend");
+
+    public static SongPopMap mSongPopMap;
+    //public PlaylistDB mPlaylistDB;
+    public static AutocompleteDB mAutocompleteDB;
 
     public static void main(String[] args) {
+        /****************************
+        * Initalize
+        ****************************/
+        mSongPopMap = new SongPopMap();
+        //mPlayListDB = new PlayListDB();
+        mAutocompleteDB = new AutocompleteDB();
+
+
         /****************************
         * Spark Configuration
         ****************************/
