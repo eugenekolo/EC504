@@ -54,7 +54,7 @@ public class AlGore {
     public static AutocompleteDB mAutocompleteDB;
 
     public static void main(String[] args) {
-        System.out.println("[*] Al Gore Rhythems started!");
+        System.out.println("[*] Al Gore Rhythms started!");
         /****************************
         * Initialize data structures 
         ****************************/
@@ -163,21 +163,27 @@ public class AlGore {
         get("/api/getTop8", (req, res) -> {
             //TODO(eugenek): Test this is returning top 8 based on popularity
             ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
-            HashMap<Integer, String> top8Map = new HashMap<Integer, String>();
+            HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
 
+            // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
             for (int i = 0; i < top8List.size(); i++) {
-                Set<Song> songSet = top8List.get(i).getSongSet();
+                PlaylistNode playlist = top8List.get(i);
+                Set<Song> songSet = playlist.getSongSet();
                 String playlistSongString = "";
                 for (Song song : songSet) {
                     playlistSongString += song.getTitle() + "##";
                 }
-                top8Map.put(i, playlistSongString);
+
+                HashMap<String, String> playlistData = new HashMap<String,String>();
+                playlistData.put("title", playlistSongString);
+                playlistData.put("popularity", String.valueOf(playlist.getPopularity()));
+
+                top8Map.put(i, playlistData);
             }
 
-            // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
             System.out.println("[+] getTop8 successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
-                System.out.println("[+] --------- " + i + ". " + top8Map.get(i));
+                System.out.println("[+]\t" + i + ". " + top8Map.get(i));
             }
 
             return mapToJson(top8Map);
@@ -221,9 +227,9 @@ public class AlGore {
                 songTitlesMap.put(i, songList.get(i).getTitle());
             }
 
-            System.out.println("[+] getAutocomplete successful, found \"" + json.get("song") + "\"");
+            System.out.println("[+] getAutocomplete successful, looking for \"" + json.get("song") + "\"");
             for (Song song : songList) { // Should be <= 4
-                System.out.println("[+] --------------------------- found: " + song.getTitle() + " " 
+                System.out.println("[+]\tfound: " + song.getTitle() + " " 
                     + song.getPopularity());
             }
 
