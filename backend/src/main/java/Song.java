@@ -5,8 +5,8 @@
 * This is the backend part. Including the web and data structure logic.
 *
 * Features:
-*   + Autocomplete song
-*   + List top 8 playlists
+*   + Autocomplete song, and list top 4 songs based on popularity
+*   + List top 8 most popular playlists
 *   + Add up to 1024 playlists
 *   + Suggest most popular playlist with input song
 *   + Restful API
@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.6
+* @version: 0.7
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -25,13 +25,14 @@ package algore;
 
 import java.util.Set;
 
-public class Song {
+public class Song implements Comparable {
     public String _title;
 	public Integer _popularity;
     public PlaylistNode _bestPlaylist;
 
 	public Song(String title) {
         _title = title;
+        _popularity = 0;
     }
 
     public Song(String title, Integer popularity) {
@@ -56,6 +57,11 @@ public class Song {
     * return true on replacing, and false otherwise.
     */
     public boolean setBestPlaylist(PlaylistNode bestPlaylist) {
+        if (_bestPlaylist == null) {
+            _bestPlaylist = bestPlaylist;
+            return true;
+        }
+        
         if (bestPlaylist.getPopularity() > _bestPlaylist.getPopularity()) {
             _bestPlaylist = bestPlaylist;
             return true;
@@ -66,4 +72,15 @@ public class Song {
     public PlaylistNode getBestPlaylist() {
         return _bestPlaylist;
     }
+
+    @Override
+    public int compareTo(Object other) {
+        if (_popularity < ((Song)other).getPopularity()) {
+            return -1;
+        }
+        if (_popularity > ((Song)other).getPopularity()) {
+            return 1;
+        }
+        return 0;
+    }   
 }

@@ -5,8 +5,8 @@
 * This is the backend part. Including the web and data structure logic.
 *
 * Features:
-*   + Autocomplete song
-*   + List top 8 playlists
+*   + Autocomplete song, and list top 4 songs based on popularity
+*   + List top 8 most popular playlists
 *   + Add up to 1024 playlists
 *   + Suggest most popular playlist with input song
 *   + Restful API
@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.6
+* @version: 0.7
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -57,14 +57,35 @@ public class PlaylistDB {
     /** addPlaylist
     * @param: PlaylistNode playlist    A playlist to add to the database 
     * @return: true if playlist was added, false otherwise.
-    * @note: A DBEQ only need addPlaylist and a maximum size specified to handle deleting Playlists too 
+    * @note: A DBEQ only needs addPlaylist and a maximum size specified to handle deleting Playlists too 
     */
 	public void addPlaylist(PlaylistNode playlist) {
 		// TODO(eugenek): You can add the same playlist multiple times
 		// TODO(eugenek): Is that a problem??
+		/* Figure out how much popularity of each song to change by */
+		Integer amountToChange = 0;
+		if (_playlistDB.size() >= 1024) {
+			PlaylistNode leastPopular = _playlistDB.peek();
+			if (playlist.getPopularity() > leastPopular.getPopularity()) {
+				amountToChange += playlist.getPopularity();
+				amountToChange -= leastPopular.getPopularity();
+			} else {
+				amountToChange = 0;
+			}
+
+		} else {
+			amountToChange += playlist.getPopularity();
+		}
+
+		/* Add the playlist to the database */
 		_playlistDB.add(playlist);
 
-		// TODO(eugenek): Update SongToPop map here too
+		/* Update each song's best playlist and popularity */
+		Set<Song> songSet = playlist.getSongSet();
+		for (Song song : songSet) {
+			song.setPopularity(song.getPopularity() + amountToChange);
+			song.setBestPlaylist(playlist);
+		}
 	}
 
 	public ArrayList<PlaylistNode> getTop8List() {

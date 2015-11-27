@@ -5,8 +5,8 @@
 * This is the backend part. Including the web and data structure logic.
 *
 * Features:
-*   + Autocomplete song
-*   + List top 8 playlists
+*   + Autocomplete song, and list top 4 songs based on popularity
+*   + List top 8 most popular playlists
 *   + Add up to 1024 playlists
 *   + Suggest most popular playlist with input song
 *   + Restful API
@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.6
+* @version: 0.7
 * @since: November 25, 2015
 ********************************************************************************/
 

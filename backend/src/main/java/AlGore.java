@@ -5,8 +5,8 @@
 * This is the backend part. Including the web and data structure logic.
 *
 * Features:
-*   + Autocomplete song
-*   + List top 8 playlists
+*   + Autocomplete song, and list top 4 songs based on popularity
+*   + List top 8 most popular playlists
 *   + Add up to 1024 playlists
 *   + Suggest most popular playlist with input song
 *   + Restful API
@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.6
+* @version: 0.7
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.SortedMap;
+import java.util.Collections;
 
 import static spark.Spark.*;
 import spark.ModelAndView;
@@ -107,7 +109,7 @@ public class AlGore {
         post("/api/addPlaylist", (req, res) -> {
             String body = req.body();
             HashMap<String, String> json = jsonToMap(body);
-
+            Integer amountAdded = 0;
             /* Don't need the file name. */
             String data;
             HashMap.Entry<String,String> entry = json.entrySet().iterator().next();
@@ -134,12 +136,15 @@ public class AlGore {
                 PlaylistNode playlist = new PlaylistNode(popularity, songSet);
                 mPlaylistDB.addPlaylist(playlist);
 
+                amountAdded += 1;
                 playlistLine = reader.readLine();
             }
 
-            //TODO(eugenek): Make this reutrn 200;
-            System.out.println("[+] addPlaylist successful");
-            return "good";
+            System.out.println("[+] addPlaylist successful added " + amountAdded + " playlists");
+
+            res.status(200);
+            res.body("Successfully added playlists");
+            return res;
         });
 
         /** GET /api/getTop8
@@ -150,6 +155,7 @@ public class AlGore {
         *       {"1":"Apple##Orange##Watermelon", "2":"Ferrari##Lamboughini##BMW", "3":"Nas##Tupac##Biggie"....}
         */
         get("/api/getTop8", (req, res) -> {
+            //TODO(eugenek): Test this is returning top 8 based on popularity
             ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
             HashMap<Integer, String> top8Map = new HashMap<Integer, String>();
 
@@ -163,11 +169,15 @@ public class AlGore {
             }
 
             // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
-            System.out.println("[+] getTop8 successful");
+            System.out.println("[+] getTop8 successful returning: ");
+            for (int i = 0; i < top8List.size(); i++) {
+                System.out.println("[+] --------- " + i + ". " + top8Map.get(i));
+            }
+
             return mapToJson(top8Map);
         });
 
-        /** GET /api/getAutocomplete
+        /** POST /api/getAutocomplete
         *   Gets a string and searches the database for the most popular matches
         *
         *   @req: JSON of "song" matched to partial completion
@@ -180,18 +190,42 @@ public class AlGore {
             String body = req.body();
             HashMap<String, String> json = jsonToMap(body);    
 
-            ArrayList<String> songs = mAutocompleteDB.getPrefixList(json.get("song"));
-            HashMap<Integer, String> autoCompleteSongs = new HashMap<Integer, String>();
-            for (int i = 0; i < songs.size(); i++) {
-                String song = songs.get(i);
-                autoCompleteSongs.put(i, song);
+            ArrayList<String> songTitles = mAutocompleteDB.getPrefixList(json.get("song"));
+
+            /* Change the ArrayList of song titles to a sorted song list of max size 4*/
+            ArrayList<Song> songList = new ArrayList<Song>();
+            for (int i = 0; i < songTitles.size(); i++) {
+                Song song = mSongTitleToSongMap.getSong(songTitles.get(i));
+                if (songList.size() < 4) {
+                    songList.add(song);
+                } else {
+                    Song minSong = Collections.min(songList);
+                    if (minSong.getPopularity() < song.getPopularity()) {
+                        songList.remove(minSong);
+                        songList.add(song);
+                    } else {
+                        // Do nothing, song popularity is less than the other 4 already
+                    }
+                }
+            }
+            Collections.sort(songList);
+
+            /* Converted the sorted song set to a song title map index by rank */
+            HashMap<Integer, String> songTitlesMap = new HashMap<Integer, String>();
+            for (int i = 0; i < songList.size(); i++) {
+                songTitlesMap.put(i, songList.get(i).getTitle());
             }
 
-            System.out.println("[+] getAutocomplete successful");
-            return mapToJson(autoCompleteSongs);
+            System.out.println("[+] getAutocomplete successful, found \"" + json.get("song") + "\"");
+            for (Song song : songList) { // Should be <= 4
+                System.out.println("[+] --------------------------- found: " + song.getTitle() + " " 
+                    + song.getPopularity());
+            }
+
+            return mapToJson(songTitlesMap);
         });
 
-        /** GET /api/suggestPlaylist
+        /** POST /api/suggestPlaylist
         *   Gets a song title and suggests the most popular playlist that has it
         *
         *   @req: JSON of "song" matches to <songTitle>
@@ -199,12 +233,26 @@ public class AlGore {
         *   @res: JSON with most popular playlist that has the song
         *       {"mostPopular": "1 2 9 3 2 6 20 185\t81"}
         */
-        get("/api/suggestPlaylist", (req, res) -> {
-            String body = req.body();
-
-            return "[GET] suggestPlayList";
-        });
-
+        //post("/api/suggestPlaylist", (req, res) -> {
+        //    String body = req.body();
+        //    HashMap<String, String> json = jsonToMap(body);    
+        //    String songTitle = json.get("song");
+//
+        //    /* Get best playlist */
+        //    Song song = mSongTitleToSongMap.get(songTitle);
+        //    PlaylistNode playlist = song.getBestPlaylist();
+//
+        //    /* Convert best playlist to string */
+        //    Set<Song> songSet = playlist.getSongSet();
+        //    String playlistSongString = songSetToString(songSet)
+//
+        //    /* Convert playlist string to a JSON map */
+        //    HashMap<String, String> mostPopular = new HashMap<String, String>();
+        //    mostPopular.put("mostPopular", playlistSongString);
+//
+        //    return mapToJson(mostPopular);
+        //});
+        
     }
 
     /****************************
@@ -222,6 +270,14 @@ public class AlGore {
         HashMap<String,String> map = new Gson().fromJson(json, 
             new TypeToken<HashMap<String, String>>(){}.getType());
         return map;
+    }
+
+    public static String songSetToString(Set<Song> songSet) {
+        String playlistSongString = "";
+            for (Song song : songSet) {
+                playlistSongString += song.getTitle() + "##";
+            }
+        return playlistSongString;
     }
 
 } // END Class AlGore
