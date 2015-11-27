@@ -56,16 +56,22 @@ public class AlGore {
         mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
-        /* Match song id's with song strings */
-        /* Add all song strings to the AutocompleteDB */
         //TODO(eugenek): Consider song author too?
         File song_list_txt = new File("./assets/song_list.txt");
         try (BufferedReader reader = new BufferedReader(new FileReader(song_list_txt))) {
             String songLine = reader.readLine();
             while (songLine != null) {
+                /* Map song ids -> song titles */
                 String[] songLineProps = songLine.split("\t");
                 mSongIdToTitleMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
+
+                /* Map song titles -> song objects */
+                Song song = new Song(songLineProps[1]);
+                mSongTitleToSongMap.putSong(songLineProps[1], song);
+
+                /* Add all song titles to the AutocompleteDB */
                 mAutocompleteDB.putSong(songLineProps[1]);
+
                 songLine = reader.readLine();
             }
         } catch(Exception e) {
@@ -107,24 +113,25 @@ public class AlGore {
             HashMap.Entry<String,String> entry = json.entrySet().iterator().next();
             data = entry.getValue();
 
-            /* Scan the playlist data line and add each playlist */
+            /* Scan the playlist data line by line and add each playlist */
             BufferedReader reader = new BufferedReader(new StringReader(data));
             String playlistLine = reader.readLine();
             while (playlistLine != null) {
-                /* Extract the songs and popularity */
-                String[] playListLineSplit = playlistLine.split("\t");
-                String[] songList = playListLineSplit[0].split(" ");
-                Integer popularity = Integer.parseInt(playListLineSplit[1]);
+                /* Extract the song ids and popularity */
+                String[] playlistLineSplit = playlistLine.split("\t");
+                String[] songIdList = playlistLineSplit[0].split(" ");
+                Integer popularity = Integer.parseInt(playlistLineSplit[1]);
 
-                /* Make a playlist node */
-                // TODO(eugenek): Might be more efficient to change SongSet to a Set<String> instead
-                Set<Integer> songSet = new HashSet<Integer>();
-                for (int i = 0; i < songList.length; i++) {
-                    songSet.add(Integer.parseInt(songList[i]));
+                /* Map the input song ids to Song objects*/
+                Set<Song> songSet = new HashSet<Song>();
+                for (int i = 0; i < songIdList.length; i++) {
+                    String songTitle = mSongIdToTitleMap.getSong(Integer.parseInt(songIdList[i]));
+                    Song song = mSongTitleToSongMap.getSong(songTitle);
+                    songSet.add(song);
                 }
-                PlaylistNode playlist = new PlaylistNode(popularity, songSet);
 
-                /* Add the playlist node to the database */
+                /* Add the playlistNode to the playListDB*/
+                PlaylistNode playlist = new PlaylistNode(popularity, songSet);
                 mPlaylistDB.addPlaylist(playlist);
 
                 playlistLine = reader.readLine();
@@ -147,10 +154,10 @@ public class AlGore {
             HashMap<Integer, String> top8Map = new HashMap<Integer, String>();
 
             for (int i = 0; i < top8List.size(); i++) {
-                Set<Integer> songSet = top8List.get(i).getSongSet();
+                Set<Song> songSet = top8List.get(i).getSongSet();
                 String playlistSongString = "";
-                for (Integer songId : songSet) {
-                    playlistSongString += mSongIdToTitleMap.getSong(songId) + "##";
+                for (Song song : songSet) {
+                    playlistSongString += song.getTitle() + "##";
                 }
                 top8Map.put(i, playlistSongString);
             }

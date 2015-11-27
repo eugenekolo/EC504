@@ -27,14 +27,14 @@ import java.util.Set;
 
 public class PlaylistNode implements Comparable {
 	public Integer _popularity;
-	public Set<Integer> _songSet;
+	public Set<Song> _songSet;
 
-	public PlaylistNode(Integer popularity, Set<Integer> songSet) {
+	public PlaylistNode(Integer popularity, Set<Song> songSet) {
 		_popularity = popularity;
 		_songSet = songSet;
     }
 
-    public Set<Integer> getSongSet() {
+    public Set<Song> getSongSet() {
     	return _songSet;
     }
 
