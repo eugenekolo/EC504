@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.7
+* @version: 0.8
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -140,6 +140,7 @@ public class AlGore {
                 playlistLine = reader.readLine();
             }
 
+            // TODO(eugenek): Change this to attempted to add: x, actually added: y
             System.out.println("[+] addPlaylist successful added " + amountAdded + " playlists");
 
             res.status(200);
@@ -233,25 +234,31 @@ public class AlGore {
         *   @res: JSON with most popular playlist that has the song
         *       {"mostPopular": "1 2 9 3 2 6 20 185\t81"}
         */
-        //post("/api/suggestPlaylist", (req, res) -> {
-        //    String body = req.body();
-        //    HashMap<String, String> json = jsonToMap(body);    
-        //    String songTitle = json.get("song");
-//
-        //    /* Get best playlist */
-        //    Song song = mSongTitleToSongMap.get(songTitle);
-        //    PlaylistNode playlist = song.getBestPlaylist();
-//
-        //    /* Convert best playlist to string */
-        //    Set<Song> songSet = playlist.getSongSet();
-        //    String playlistSongString = songSetToString(songSet)
-//
-        //    /* Convert playlist string to a JSON map */
-        //    HashMap<String, String> mostPopular = new HashMap<String, String>();
-        //    mostPopular.put("mostPopular", playlistSongString);
-//
-        //    return mapToJson(mostPopular);
-        //});
+        post("/api/suggestPlaylist", (req, res) -> {
+            String body = req.body();
+            HashMap<String, String> json = jsonToMap(body);    
+            String songTitle = json.get("song");
+
+            /* Get best playlist */
+            Song song = mSongTitleToSongMap.getSong(songTitle);
+            if (song == null || song.getBestPlaylist() == null) {
+                res.status(400);
+                res.body("Song not found");
+                // TODO(eugenek): This actually isn't returning what I want it to. Returns an Obj ID right now.
+                return res;
+            }
+            PlaylistNode playlist = song.getBestPlaylist();
+
+            /* Convert best playlist to string */
+            Set<Song> songSet = playlist.getSongSet();
+            String playlistSongString = songSetToString(songSet);
+
+            /* Convert playlist string to a JSON map */
+            HashMap<String, String> mostPopular = new HashMap<String, String>();
+            mostPopular.put("mostPopular", playlistSongString);
+
+            return mapToJson(mostPopular);
+        });
         
     }
 

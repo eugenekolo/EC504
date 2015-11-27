@@ -17,7 +17,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.7
+* @version: 0.8
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -61,7 +61,7 @@ public class Song implements Comparable {
             _bestPlaylist = bestPlaylist;
             return true;
         }
-        
+
         if (bestPlaylist.getPopularity() > _bestPlaylist.getPopularity()) {
             _bestPlaylist = bestPlaylist;
             return true;
