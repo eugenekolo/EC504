@@ -1,3 +1,10 @@
+/*
+* TODO(eugenek): Fill out headers
+*
+*
+*
+*/
+
 package algore;
 
 import spark.ModelAndView;
@@ -5,21 +12,40 @@ import spark.template.mustache.MustacheTemplateEngine;
 import static spark.Spark.*;
 import java.util.HashMap;
 import com.google.gson.Gson;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class AlGore {
 
-    public static SongPopMap mSongPopMap;
-    //public PlaylistDB mPlaylistDB;
+    public static SongIdToStringMap mSongIdToStringMap;
+    public static SongToPopMap mSongToPopMap;
+    public static PlaylistDB mPlaylistDB;
     public static AutocompleteDB mAutocompleteDB;
 
     public static void main(String[] args) {
         /****************************
-        * Initalize
+        * Initialize data structures 
         ****************************/
-        mSongPopMap = new SongPopMap();
-        //mPlayListDB = new PlayListDB();
+        mSongIdToStringMap = new SongIdToStringMap();
+        mSongToPopMap = new SongToPopMap();
+        mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
+        /* Match song id's with song strings */
+        /* Add all song strings to the AutocompleteDB */
+        //TODO(eugenek): Consider song author too?
+        File song_list_txt = new File("song_list.txt");
+        try (BufferedReader reader = new BufferedReader(new FileReader(song_list_txt))) {
+            String songLine = reader.readLine();
+            while (songLine != null) {
+                String[] songLineProps = songLine.split("\t");
+                mSongIdToStringMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
+                mAutocompleteDB.putSong(songLineProps[1]);
+            }
+        } catch(Exception e) {
+            System.out.println("[ERROR] Could not parse song_list.txt");
+        }
 
         /****************************
         * Spark Configuration

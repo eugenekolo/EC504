@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
 
+/* 
+https://apache.googlesource.com/commons-collections/+/COLLECTIONS_4_0/src/test/java/org/apache/commons/collections4/trie/PatriciaTrieTest.java
+
+https://commons.apache.org/proper/commons-collections/apidocs/org/apache/commons/collections4/trie/PatriciaTrie.html#headMap(K)
+*/
 public class AutocompleteDB {
 	public PatriciaTrie<String> _SongTrie;
 
@@ -13,7 +18,7 @@ public class AutocompleteDB {
  		_SongTrie = new PatriciaTrie<String>();
     }
 
-	public void addSong(String song) {
+	public void putSong(String song) {
 		_SongTrie.put(song, song);
 	}
 
