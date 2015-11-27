@@ -24,7 +24,6 @@
 package algore;
 
 import java.util.Set;
-import java.util.ArrayList;
 
 public class PlaylistNode implements Comparable {
 	public Integer _popularity;

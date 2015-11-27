@@ -20,6 +20,7 @@
 * @version: 0.6
 * @since: November 25, 2015
 ********************************************************************************/
+
 package algore;
 
 import java.util.HashMap;

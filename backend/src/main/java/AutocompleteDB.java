@@ -24,7 +24,7 @@
 package algore;
 
 import java.util.HashMap;
-import java.util.SortedMap;
+import java.util.SortedMap; // TODO(eugenek): Why sorted map?
 import java.util.ArrayList;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;

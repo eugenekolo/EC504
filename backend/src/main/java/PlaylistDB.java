@@ -24,9 +24,8 @@
 package algore;
 
 import java.util.HashMap;
-import java.util.SortedMap;
 import java.util.ArrayList;
-import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
+//import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
 import com.google.common.collect.MinMaxPriorityQueue;
 import java.util.HashSet;
 import java.util.Set;
