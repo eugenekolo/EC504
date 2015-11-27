@@ -25,48 +25,37 @@ package algore;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-//import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
-import com.google.common.collect.MinMaxPriorityQueue;
+import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 public class PlaylistDB {
-    /* Can be configured with a maximum size and automatic removal of greatest element*/
-    /* Top is default implemented as min */
-    public MinMaxPriorityQueue<PlaylistNode> _playlistDB;
-
-    /* Default implemented as a MinPriorityQueue */
-    //public PriorityQueue<PlaylistNode> _playlistDB;
-    //public HashMap<Integer, String> _top8;
+    public PriorityQueue<PlaylistNode> _playlistDB;
+    public ArrayList<PlaylistNode> _top8;
 
     public PlaylistDB() {
-        MinMaxPriorityQueue.Builder builder = _playlistDB.maximumSize(1024);
-        _playlistDB = builder.create();
-
-        //_playlistDB = new PriorityQueue<PlaylistNode>;
-        //_top8 = new HashMap<Integer, String>();
+        _playlistDB = new PriorityQueue<PlaylistNode>();
+        _top8 = new ArrayList<PlaylistNode>();
     }
 
-    /****************************
-    * If using DEBQ 
-    ****************************/
     /** addPlaylist
     * @param: PlaylistNode playlist    A playlist to add to the database 
     * @return: true if playlist was added, false otherwise.
-    * @note: A DBEQ only needs addPlaylist and a maximum size specified to handle deleting Playlists too 
     */
     public boolean addPlaylist(PlaylistNode playlist) {
         // TODO(eugenek): You can add the same playlist multiple times
         // TODO(eugenek): Is that a problem??
-        /* Figure out how much popularity of each song to change by */
+        /* Figure out if to add the playlist if to update the top8, and how much to update 
+        the popularity of each song by */
         Integer amountToChange = 0;
         boolean isAdded = false;
-
         if (_playlistDB.size() >= 1024) {
             PlaylistNode leastPopular = _playlistDB.peek();
             if (playlist.getPopularity() > leastPopular.getPopularity()) {
                 amountToChange += playlist.getPopularity();
                 amountToChange -= leastPopular.getPopularity();
+                _playlistDB.poll(); // Remove the leastPopular entry
                 isAdded = true;
             } else {
                 amountToChange = 0;
@@ -78,75 +67,41 @@ public class PlaylistDB {
             isAdded = true;
         }
 
-        /* Add the playlist to the database */
-        _playlistDB.add(playlist);
+        /* Update the databases */
+        if (isAdded) {
+            _playlistDB.add(playlist);
+            /* Update each song's best playlist and popularity */
+            Set<Song> songSet = playlist.getSongSet();
+            for (Song song : songSet) {
+                song.setPopularity(song.getPopularity() + amountToChange);
+                song.setBestPlaylist(playlist);
+            }
 
-        /* Update each song's best playlist and popularity */
-        Set<Song> songSet = playlist.getSongSet();
-        for (Song song : songSet) {
-            song.setPopularity(song.getPopularity() + amountToChange);
-            song.setBestPlaylist(playlist);
+            /* Update the top 8 */
+            addTop8(playlist);
         }
 
         return isAdded;
     }
 
-    public ArrayList<PlaylistNode> getTop8List() {
-        ArrayList<PlaylistNode> top8 = new ArrayList<PlaylistNode>();
-        Integer stopSize = Math.min(8, _playlistDB.size()); // Handle case size < 8
-
-        /* Pop the top 8 playlists from the end of the queue */
-        for (int i = 0; i < stopSize; i++) {
-            PlaylistNode playlist = _playlistDB.pollLast();
-            top8.add(playlist);
-        }
-
-        /* Put the top 8 playlists back to the end of the queue */
-        for (int i = 0; i < stopSize; i++) {
-            _playlistDB.add(top8.get(i));
-        }
-
-        return top8;
-    }
-
-    public HashMap<Integer, PlaylistNode> getTop8Map() {
-        ArrayList<PlaylistNode> top8List = getTop8List();
-        HashMap<Integer, PlaylistNode> top8Map = new HashMap<Integer, PlaylistNode>();
-        Integer stopSize = Math.min(8, _playlistDB.size()); // Handle case size < 8
-
-        for (int i = 0; i < top8List.size(); i++) {
-            top8Map.put(i, top8List.get(i));
-        }
-
-        return top8Map;
-    }
-    
-    /****************************
-    * If using PriorityQueue
-    ****************************/
-    /** addPlaylist
-    * @param: PlaylistNode playlist    A playlist to add to the database 
-    * @return: true if playlist was added, false otherwise.
-    * @note: A MinPriorityQueue requires a remove handler to handle DB size >= 1024
-    */
-    /*public boolean addPlaylist(PlaylistNode playlist) {
-        if (_playlistDB.size() >= 1024) { // Should never be greater than 1024
-            if (playlist.popularity > _playlistDB.peek().popularity) {
-                _playlistDB.poll();
-                _playListDB.add(playlist);
-                return true;
-            }
-            else {
-                // Don't add the playlist
-                return false;
-            }
-        }
-        else {
-            _playlistDB.add(playlist);
+    public boolean addTop8(PlaylistNode playlist) {
+        if (_top8.size() < 8) {
+            _top8.add(playlist);
             return true;
         }
+
+        PlaylistNode worstTop8 = Collections.min(_top8);
+        if (playlist.getPopularity() > worstTop8.getPopularity()) {
+            _top8.remove(worstTop8);
+            _top8.add(playlist);
+            return true;
+        }
+
+        return false;
     }
-    */
 
-
+    public ArrayList<PlaylistNode> getTop8() {
+        Collections.sort(_top8, Collections.reverseOrder());
+        return _top8;
+    }
 }
