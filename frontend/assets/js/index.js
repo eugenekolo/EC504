@@ -5,7 +5,7 @@ $(function() {
     // On page load: Ajax GET request to '/api/getTop8'
     $.ajax({
         type: 'GET',
-        url: '/api/getTop8.json',
+        url: '/api/getTop8',
         data: 'json',
         datatype: 'application/json',
         success: function(data) {
@@ -16,7 +16,8 @@ $(function() {
             }
         },
         error: function(data) {
-            alert('Failed to retrieve Top8 content');
+            // alert('Failed to retrieve Top8 content');
+            console.log('Failed to retrieve Top8 content');
         }
     });
 });
