@@ -11,7 +11,11 @@ import java.util.HashMap;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.StringReader;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 import static spark.Spark.*;
 import spark.ModelAndView;
@@ -28,7 +32,6 @@ public class AlGore {
 
     public static void main(String[] args) {
         System.out.println("[*] Al Gore Rhythems started!");
-
         /****************************
         * Initialize data structures 
         ****************************/
@@ -54,14 +57,8 @@ public class AlGore {
             return;
         }
 
-        // TODO(eugenek): This is a small test for now. Remove at release.
-        /*ArrayList<String> songTitles = mAutocompleteDB.getPrefixList("Obses"); // Should return 3 items
-        for (String songTitle : songTitles) {
-            System.out.println(songTitle);
-        }
-        */
-
         System.out.println("[*] Initialized data structures");
+
 
         /****************************
         * Spark Configuration
@@ -72,6 +69,8 @@ public class AlGore {
         // TODO(eugenek): Look into setSecure to keep the API channel private.
 
         System.out.println("[*] Started backend webserver");
+
+
         /****************************
         * Route programming
         ****************************/
@@ -84,11 +83,35 @@ public class AlGore {
         */
         post("/api/addPlaylist", (req, res) -> {
             String body = req.body();
+            HashMap<String, String> json = jsonToMap(body);
 
-            // TODO(eugenek): For bringup right now
-            res.status(200);
-            res.body("Successfully added playlists");
-            return mapToJson(res);
+            /* Don't need the file name. */
+            String data;
+            HashMap.Entry<String,String> entry = json.entrySet().iterator().next();
+            data = entry.getValue();
+
+            BufferedReader reader = new BufferedReader(new StringReader(data));
+
+            String playlistLine = reader.readLine();
+            while (playlistLine != null) {
+                String[] playListLineSplit = playlistLine.split("\t");
+                String[] songList = playListLineSplit[0].split(" ");
+                Integer popularity = Integer.parseInt(playListLineSplit[1]);
+
+                // TODO(eugenek): Might be more efficient to change SongSet to a Set<String> instead
+                Set<Integer> songSet = new HashSet<Integer>();
+                for (int i = 0; i < songList.length; i++) {
+                    songSet.add(Integer.parseInt(songList[i]));
+                }
+
+                PlaylistNode playlist = new PlaylistNode(popularity, songSet);
+                mPlaylistDB.addPlaylist(playlist);
+
+                playlistLine = reader.readLine();
+            }
+
+            //TODO(eugenek): Make this reutrn 200;
+            return "good";
         });
 
         /** GET /api/getTop8
@@ -99,20 +122,20 @@ public class AlGore {
         *       {"1":"Foo", "2":"Bar", "3":"Baz"....}
         */
         get("/api/getTop8", (req, res) -> {
-            String body = req.body();
+            ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
+            HashMap<Integer, String> top8Map = new HashMap<Integer, String>();
 
-            HashMap<Integer, String> top8 = new HashMap<Integer, String>();
-            // TODO(eugenek): For bringup right now
-            top8.put(1, "TestSong_1");
-            top8.put(2, "TestSong_2");
-            top8.put(3, "TestSong_3");
-            top8.put(4, "TestSong_4");
-            top8.put(5, "TestSong_5");
-            top8.put(6, "TestSong_6");
-            top8.put(7, "TestSong_7");
-            top8.put(8, "TestSong_8");
+            for (int i = 0; i < top8List.size(); i++) {
+                Set<Integer> songSet = top8List.get(i).getSongSet();
+                String playlistSongString = "";
+                for (Integer songId : songSet) {
+                    playlistSongString += mSongIdToStringMap.getSong(songId) + "||";
+                }
+                top8Map.put(i, playlistSongString);
+            }
 
-            return mapToJson(top8);
+            // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
+            return mapToJson(top8Map);
         });
 
         /** GET /api/getAutocomplete
@@ -124,7 +147,7 @@ public class AlGore {
         *       {"1": "Hello Baby", "2": "Hellozzz", ...}
         */
         post("/api/getAutocomplete", (req, res) -> {
-            //TODO(eugenek): Limit return to top 5 most popular;
+            //TODO(eugenek): Limit return to top 5 most popular
             String body = req.body();
             HashMap<String, String> json = jsonToMap(body);    
 
