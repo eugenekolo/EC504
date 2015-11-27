@@ -36,7 +36,7 @@ public class SongTitleToSongMap {
 		_SongTitleToSongMap.put(songTitle, song);
 	}
 
-	public Integer getSong(String songTitle) {
+	public Song getSong(String songTitle) {
 		return _SongTitleToSongMap.get(songTitle);
 	}
 }

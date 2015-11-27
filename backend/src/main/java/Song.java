@@ -47,7 +47,7 @@ public class Song {
         return _popularity;
     }
 
-    public Integer getTitle() {
+    public String getTitle() {
         return _title;
     }
 
@@ -63,7 +63,7 @@ public class Song {
         return false;
     }
     
-    public boolean getBestPlaylist() {
+    public PlaylistNode getBestPlaylist() {
         return _bestPlaylist;
     }
 }
