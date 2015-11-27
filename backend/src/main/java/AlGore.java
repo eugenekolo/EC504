@@ -41,8 +41,8 @@ import com.google.gson.reflect.TypeToken;
 
 public class AlGore {
 
-    public static SongIdToStringMap mSongIdToStringMap;
-    public static SongStringToPopMap mSongStringToPopMap;
+    public static SongIdToTitleMap mSongIdToTitleMap;
+    public static SongTitleToSongMap mSongTitleToSongMap;
     public static PlaylistDB mPlaylistDB;
     public static AutocompleteDB mAutocompleteDB;
 
@@ -51,8 +51,8 @@ public class AlGore {
         /****************************
         * Initialize data structures 
         ****************************/
-        mSongIdToStringMap = new SongIdToStringMap();
-        mSongStringToPopMap = new SongStringToPopMap();
+        mSongIdToTitleMap = new SongIdToTitleMap();
+        mSongTitleToSongMap = new SongTitleToSongMap();
         mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
@@ -64,7 +64,7 @@ public class AlGore {
             String songLine = reader.readLine();
             while (songLine != null) {
                 String[] songLineProps = songLine.split("\t");
-                mSongIdToStringMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
+                mSongIdToTitleMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
                 mAutocompleteDB.putSong(songLineProps[1]);
                 songLine = reader.readLine();
             }
@@ -150,7 +150,7 @@ public class AlGore {
                 Set<Integer> songSet = top8List.get(i).getSongSet();
                 String playlistSongString = "";
                 for (Integer songId : songSet) {
-                    playlistSongString += mSongIdToStringMap.getSong(songId) + "##";
+                    playlistSongString += mSongIdToTitleMap.getSong(songId) + "##";
                 }
                 top8Map.put(i, playlistSongString);
             }
