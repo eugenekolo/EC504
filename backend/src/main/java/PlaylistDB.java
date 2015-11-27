@@ -1,3 +1,13 @@
+/********************************************************************************
+* Al Gore Rhythms 
+* Playlist Application Project
+* 
+* @author: Eugene Kolo
+* @email: eugene@kolobyte.com
+* @version: 0.6
+* @since: November 25, 2015
+********************************************************************************/
+
 package algore;
 
 import java.util.HashMap;
@@ -41,6 +51,7 @@ public class PlaylistDB {
 		// TODO(eugenek): You can add the same playlist multiple times
 		// TODO(eugenek): Is that a problem??
 		_playlistDB.add(playlist);
+
 		// TODO(eugenek): Update SongToPop map here too
 	}
 

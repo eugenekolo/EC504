@@ -1,9 +1,12 @@
-/*
-* TODO(eugenek): Fill out headers
-*
-*
-*
-*/
+/********************************************************************************
+* Al Gore Rhythms 
+* Playlist Application Project
+* 
+* @author: Eugene Kolo
+* @email: eugene@kolobyte.com
+* @version: 0.6
+* @since: November 25, 2015
+********************************************************************************/
 
 package algore;
 
@@ -111,6 +114,7 @@ public class AlGore {
             }
 
             //TODO(eugenek): Make this reutrn 200;
+            System.out.println("[+] addPlaylist successful");
             return "good";
         });
 
@@ -135,6 +139,7 @@ public class AlGore {
             }
 
             // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
+            System.out.println("[+] getTop8 successful");
             return mapToJson(top8Map);
         });
 
@@ -157,7 +162,8 @@ public class AlGore {
                 String song = songs.get(i);
                 autoCompleteSongs.put(i, song);
             }
-        
+
+            System.out.println("[+] getAutocomplete successful");
             return mapToJson(autoCompleteSongs);
         });
 
