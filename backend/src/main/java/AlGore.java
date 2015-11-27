@@ -4,6 +4,11 @@
 *
 * This is the backend part. Including the web and data structure logic.
 *
+* @author: Eugene Kolo
+* @email: eugene@kolobyte.com
+* @version: 0.8
+* @since: November 25, 2015
+
 * Features:
 *   + Autocomplete song, and list top 4 songs based on popularity
 *   + List top 8 most popular playlists
@@ -15,10 +20,10 @@
 *   + Efficient
 *   + Nice frontend 
 *
-* @author: Eugene Kolo
-* @email: eugene@kolobyte.com
-* @version: 0.8
-* @since: November 25, 2015
+* Todo:
+*   + Test out Guava.DBEQ vs PriorityQueue
+*   + Should I really be using ArrayList and not built-in list[]?
+*
 ********************************************************************************/
 
 package algore;
@@ -187,7 +192,6 @@ public class AlGore {
         *       {"1": "Hello Baby", "2": "Hellozzz", ...}
         */
         post("/api/getAutocomplete", (req, res) -> {
-            //TODO(eugenek): Limit return to top 5 most popular
             String body = req.body();
             HashMap<String, String> json = jsonToMap(body);    
 

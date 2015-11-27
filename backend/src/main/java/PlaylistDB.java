@@ -31,9 +31,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PlaylistDB {
-
-    // TODO(eugenek): Test out Guava.DBEQ vs PriorityQueue
-
     /* Can be configured with a maximum size and automatic removal of greatest element*/
     /* Top is default implemented as min */
     public MinMaxPriorityQueue<PlaylistNode> _playlistDB;
@@ -43,7 +40,6 @@ public class PlaylistDB {
     //public HashMap<Integer, String> _top8;
 
     public PlaylistDB() {
-        //_playlistDB = new MinMaxPriorityQueue<PlaylistNode>();
         MinMaxPriorityQueue.Builder builder = _playlistDB.maximumSize(1024);
         _playlistDB = builder.create();
 

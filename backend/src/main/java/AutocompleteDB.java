@@ -24,7 +24,7 @@
 package algore;
 
 import java.util.HashMap;
-import java.util.SortedMap; // TODO(eugenek): Why sorted map?
+import java.util.SortedMap;
 import java.util.ArrayList;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -51,7 +51,6 @@ public class AutocompleteDB {
         return map;
     }
 
-    // TODO(eugenek): Should I really be using ArrayList and not built-in list[]?
     public ArrayList<String> getPrefixList(String prefix) {
         SortedMap<String, String> map = getPrefixMap(prefix);
         ArrayList<String> list = new ArrayList<String>(map.values());
