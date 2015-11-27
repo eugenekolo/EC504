@@ -112,9 +112,9 @@ public class AlGore {
         *   @res: 200 if successful
         */
         post("/api/addPlaylist", (req, res) -> {
-            String body = req.body();
-            HashMap<String, String> json = jsonToMap(body);
+            HashMap<String, String> json = jsonToMap(req.body());
             Integer amountAdded = 0;
+
             /* Don't need the file name. */
             String data;
             HashMap.Entry<String,String> entry = json.entrySet().iterator().next();
@@ -146,11 +146,11 @@ public class AlGore {
             }
 
             // TODO(eugenek): Change this to attempted to add: x, actually added: y
+            /* Server side logging */
             System.out.println("[+] addPlaylist successful added " + amountAdded + " playlists");
 
             res.status(200);
-            res.body("Successfully added playlists");
-            return res;
+            return "Successfully added playlists";
         });
 
         /** GET /api/getTop8
@@ -158,7 +158,10 @@ public class AlGore {
         *
         *   @req: blank
         *   @res: JSON map of top 8 playlists song list sepated by ##
-        *       {"1":"Apple##Orange##Watermelon", "2":"Ferrari##Lamboughini##BMW", "3":"Nas##Tupac##Biggie"....}
+        *       {"1":{"title":"Apple##Orange##Watermelon", "popularity": "92"},
+        *        "2":{"title":"Ferrari##Lamboughini##BMW", "popularity": "78"},
+        *         ...
+        *       }
         */
         get("/api/getTop8", (req, res) -> {
             //TODO(eugenek): Test this is returning top 8 based on popularity
@@ -181,6 +184,7 @@ public class AlGore {
                 top8Map.put(i, playlistData);
             }
 
+            /* Server side logging */
             System.out.println("[+] getTop8 successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
                 System.out.println("[+]\t" + i + ". " + top8Map.get(i));
@@ -193,13 +197,13 @@ public class AlGore {
         *   Gets a string and searches the database for the most popular matches
         *
         *   @req: JSON of "song" matched to partial completion
-        *       {"song": <string to search for>}
+        *       {"song": "Obses"}
         *   @res: JSON with top 5 most popular autocompleted songs
-        *       {"1": "Hello Baby", "2": "Hellozzz", ...}
+        *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         */
         post("/api/getAutocomplete", (req, res) -> {
-            String body = req.body();
-            HashMap<String, String> json = jsonToMap(body);    
+            // TODO(eugenek): Make this case insensitive??
+            HashMap<String, String> json = jsonToMap(req.body());    
 
             ArrayList<String> songTitles = mAutocompleteDB.getPrefixList(json.get("song"));
 
@@ -227,6 +231,7 @@ public class AlGore {
                 songTitlesMap.put(i, songList.get(i).getTitle());
             }
 
+            /* Server side logging */
             System.out.println("[+] getAutocomplete successful, looking for \"" + json.get("song") + "\"");
             for (Song song : songList) { // Should be <= 4
                 System.out.println("[+]\tfound: " + song.getTitle() + " " 
@@ -240,33 +245,28 @@ public class AlGore {
         *   Gets a song title and suggests the most popular playlist that has it
         *
         *   @req: JSON of "song" matches to <songTitle>
-        *       {"song": <song title to search for>}
+        *       {"song": "Obsesionado"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular": "1 2 9 3 2 6 20 185\t81"}
+        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver##El Celoso##El Columpio##La Gran Senora##"}
         */
         post("/api/suggestPlaylist", (req, res) -> {
-            String body = req.body();
-            HashMap<String, String> json = jsonToMap(body);    
+            HashMap<String, String> json = jsonToMap(req.body());    
             String songTitle = json.get("song");
 
             /* Get best playlist */
             Song song = mSongTitleToSongMap.getSong(songTitle);
             if (song == null || song.getBestPlaylist() == null) {
                 res.status(400);
-                res.body("Song not found");
-                // TODO(eugenek): This actually isn't returning what I want it to. Returns an Obj ID right now.
-                return res;
+                return "Sorry, song doesn't exist, or no playlist contains it.";
             }
-            PlaylistNode playlist = song.getBestPlaylist();
-
-            /* Convert best playlist to string */
-            Set<Song> songSet = playlist.getSongSet();
-            String playlistSongString = songSetToString(songSet);
+            PlaylistNode bestPlaylist = song.getBestPlaylist();
+            String playlistTitle = playlistToTitle(bestPlaylist);
 
             /* Convert playlist string to a JSON map */
             HashMap<String, String> mostPopular = new HashMap<String, String>();
-            mostPopular.put("mostPopular", playlistSongString);
+            mostPopular.put("mostPopular", playlistTitle);
 
+            /* Server side logging */
             return mapToJson(mostPopular);
         });
         
@@ -275,9 +275,6 @@ public class AlGore {
     /****************************
     /* Helper functions         
     ****************************/
-    /**
-    * Convert a POJO to a JSON string
-    */
     public static String mapToJson(Object object) {
         Gson gson = new Gson();
         return gson.toJson(object);
@@ -291,10 +288,14 @@ public class AlGore {
 
     public static String songSetToString(Set<Song> songSet) {
         String playlistSongString = "";
-            for (Song song : songSet) {
-                playlistSongString += song.getTitle() + "##";
-            }
+        for (Song song : songSet) {
+            playlistSongString += song.getTitle() + "##";
+        }
         return playlistSongString;
+    }
+
+    public static String playlistToTitle(PlaylistNode playlist) {
+        return songSetToString(playlist.getSongSet());
     }
 
 } // END Class AlGore
