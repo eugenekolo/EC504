@@ -7,14 +7,16 @@
 
 package algore;
 
-import spark.ModelAndView;
-import spark.template.mustache.MustacheTemplateEngine;
-import static spark.Spark.*;
 import java.util.HashMap;
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+
+import static spark.Spark.*;
+import spark.ModelAndView;
+import spark.template.mustache.MustacheTemplateEngine;
+import com.google.gson.Gson;
 
 public class AlGore {
 
@@ -24,6 +26,8 @@ public class AlGore {
     public static AutocompleteDB mAutocompleteDB;
 
     public static void main(String[] args) {
+        System.out.println("[*] Al Gore Rhythems started!");
+
         /****************************
         * Initialize data structures 
         ****************************/
@@ -35,17 +39,27 @@ public class AlGore {
         /* Match song id's with song strings */
         /* Add all song strings to the AutocompleteDB */
         //TODO(eugenek): Consider song author too?
-        File song_list_txt = new File("song_list.txt");
+        File song_list_txt = new File("./assets/song_list.txt");
         try (BufferedReader reader = new BufferedReader(new FileReader(song_list_txt))) {
             String songLine = reader.readLine();
             while (songLine != null) {
                 String[] songLineProps = songLine.split("\t");
                 mSongIdToStringMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
                 mAutocompleteDB.putSong(songLineProps[1]);
+                songLine = reader.readLine();
             }
         } catch(Exception e) {
-            System.out.println("[ERROR] Could not parse song_list.txt");
+            System.out.println("[-] Could not parse song_list.txt");
+            return;
         }
+
+        // TODO(eugenek): This is a small test for now. Remove at release.
+        ArrayList<String> songTitles = mAutocompleteDB.getPrefixList("Obses"); // Should return 3 items
+        for (String songTitle : songTitles) {
+            System.out.println(songTitle);
+        }
+
+        System.out.println("[*] Initialized data structures");
 
         /****************************
         * Spark Configuration
