@@ -5,7 +5,8 @@ import java.util.SortedMap;
 import java.util.ArrayList;
 import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
 import com.google.common.collect.MinMaxPriorityQueue;
-import java.util.SortedSet;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlaylistDB {
 
@@ -20,7 +21,10 @@ public class PlaylistDB {
 	//public HashMap<Integer, String> _top8;
 
 	public PlaylistDB() {
-		_playlistDB.maximumSize(1024).create();
+		//_playlistDB = new MinMaxPriorityQueue<PlaylistNode>();
+		MinMaxPriorityQueue.Builder builder = _playlistDB.maximumSize(1024);
+		_playlistDB = builder.create();
+
 		//_playlistDB = new PriorityQueue<PlaylistNode>;
 		//_top8 = new HashMap<Integer, String>();
     }
@@ -34,19 +38,40 @@ public class PlaylistDB {
     * @note: A DBEQ only need addPlaylist and a maximum size specified to handle deleting Playlists too 
     */
 	public void addPlaylist(PlaylistNode playlist) {
+		// TODO(eugenek): You can add the same playlist multiple times
+		// TODO(eugenek): Is that a problem??
 		_playlistDB.add(playlist);
+		// TODO(eugenek): Update SongToPop map here too
 	}
 
-	public ArrayList<PlaylistNode> getTop8() {
+	public ArrayList<PlaylistNode> getTop8List() {
 		ArrayList<PlaylistNode> top8 = new ArrayList<PlaylistNode>();
-		for (int i = 0; i < 8; i++) {
+		Integer stopSize = Math.min(8, _playlistDB.size()); // Handle case size < 8
+
+		/* Pop the top 8 playlists from the end of the queue */
+		for (int i = 0; i < stopSize; i++) {
 			PlaylistNode playlist = _playlistDB.pollLast();
 			top8.add(playlist);
 		}
-		for (int i = 0; i < 8; i++) {
+
+		/* Put the top 8 playlists back to the end of the queue */
+		for (int i = 0; i < stopSize; i++) {
 			_playlistDB.add(top8.get(i));
 		}
+
 		return top8;
+	}
+
+	public HashMap<Integer, PlaylistNode> getTop8Map() {
+		ArrayList<PlaylistNode> top8List = getTop8List();
+		HashMap<Integer, PlaylistNode> top8Map = new HashMap<Integer, PlaylistNode>();
+		Integer stopSize = Math.min(8, _playlistDB.size()); // Handle case size < 8
+
+		for (int i = 0; i < top8List.size(); i++) {
+			top8Map.put(i, top8List.get(i));
+		}
+
+		return top8Map;
 	}
 	
     /****************************
