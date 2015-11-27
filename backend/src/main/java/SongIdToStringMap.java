@@ -1,7 +1,20 @@
 /********************************************************************************
 * Al Gore Rhythms 
 * Playlist Application Project
-* 
+*
+* This is the backend part. Including the web and data structure logic.
+*
+* Features:
+*   + Autocomplete song
+*   + List top 8 playlists
+*   + Add up to 1024 playlists
+*   + Suggest most popular playlist with input song
+*   + Restful API
+*   + Hackable (separated front end, separated data structures)
+*   + Always returns JSON
+*   + Efficient
+*   + Nice frontend 
+*
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
 * @version: 0.6

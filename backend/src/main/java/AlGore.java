@@ -1,7 +1,20 @@
 /********************************************************************************
 * Al Gore Rhythms 
 * Playlist Application Project
-* 
+*
+* This is the backend part. Including the web and data structure logic.
+*
+* Features:
+*   + Autocomplete song
+*   + List top 8 playlists
+*   + Add up to 1024 playlists
+*   + Suggest most popular playlist with input song
+*   + Restful API
+*   + Hackable (separated front end, separated data structures)
+*   + Always returns JSON
+*   + Efficient
+*   + Nice frontend 
+*
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
 * @version: 0.6
@@ -29,7 +42,7 @@ import com.google.gson.reflect.TypeToken;
 public class AlGore {
 
     public static SongIdToStringMap mSongIdToStringMap;
-    public static SongToPopMap mSongToPopMap;
+    public static SongStringToPopMap mSongStringToPopMap;
     public static PlaylistDB mPlaylistDB;
     public static AutocompleteDB mAutocompleteDB;
 
@@ -39,7 +52,7 @@ public class AlGore {
         * Initialize data structures 
         ****************************/
         mSongIdToStringMap = new SongIdToStringMap();
-        mSongToPopMap = new SongToPopMap();
+        mSongStringToPopMap = new SongStringToPopMap();
         mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
@@ -69,7 +82,6 @@ public class AlGore {
         setPort(5000); // Run on port 5000
         setIpAddress("127.0.0.1"); // Run on localhost
         externalStaticFileLocation("../frontend"); // Serve HTML from the frontend directory
-        // TODO(eugenek): Look into setSecure to keep the API channel private.
 
         System.out.println("[*] Started backend webserver");
 
@@ -79,6 +91,8 @@ public class AlGore {
         ****************************/
         /** POST /api/addPlaylist
         *   Gets fileData and parses out the individual playlists and adds them to the database
+        *
+        *   @note: Updating the playlistDB also updates SongStringToPopMap   
         *
         *   @req: JSON of <fileName> assosicated with <fileData>
         *       {<fileName>: <fileData>}
@@ -93,21 +107,24 @@ public class AlGore {
             HashMap.Entry<String,String> entry = json.entrySet().iterator().next();
             data = entry.getValue();
 
+            /* Scan the playlist data line and add each playlist */
             BufferedReader reader = new BufferedReader(new StringReader(data));
-
             String playlistLine = reader.readLine();
             while (playlistLine != null) {
+                /* Extract the songs and popularity */
                 String[] playListLineSplit = playlistLine.split("\t");
                 String[] songList = playListLineSplit[0].split(" ");
                 Integer popularity = Integer.parseInt(playListLineSplit[1]);
 
+                /* Make a playlist node */
                 // TODO(eugenek): Might be more efficient to change SongSet to a Set<String> instead
                 Set<Integer> songSet = new HashSet<Integer>();
                 for (int i = 0; i < songList.length; i++) {
                     songSet.add(Integer.parseInt(songList[i]));
                 }
-
                 PlaylistNode playlist = new PlaylistNode(popularity, songSet);
+
+                /* Add the playlist node to the database */
                 mPlaylistDB.addPlaylist(playlist);
 
                 playlistLine = reader.readLine();
@@ -122,8 +139,8 @@ public class AlGore {
         *   Returns Top 8 playlists based on popularity.
         *
         *   @req: blank
-        *   @res: JSON map of top 8 song title
-        *       {"1":"Foo", "2":"Bar", "3":"Baz"....}
+        *   @res: JSON map of top 8 playlists song list sepated by ##
+        *       {"1":"Apple##Orange##Watermelon", "2":"Ferrari##Lamboughini##BMW", "3":"Nas##Tupac##Biggie"....}
         */
         get("/api/getTop8", (req, res) -> {
             ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
@@ -133,7 +150,7 @@ public class AlGore {
                 Set<Integer> songSet = top8List.get(i).getSongSet();
                 String playlistSongString = "";
                 for (Integer songId : songSet) {
-                    playlistSongString += mSongIdToStringMap.getSong(songId) + "||";
+                    playlistSongString += mSongIdToStringMap.getSong(songId) + "##";
                 }
                 top8Map.put(i, playlistSongString);
             }
