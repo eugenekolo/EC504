@@ -26,30 +26,30 @@ package algore;
 import java.util.Set;
 
 public class PlaylistNode implements Comparable {
-	public Integer _popularity;
-	public Set<Song> _songSet;
+    public Integer _popularity;
+    public Set<Song> _songSet;
 
-	public PlaylistNode(Integer popularity, Set<Song> songSet) {
-		_popularity = popularity;
-		_songSet = songSet;
+    public PlaylistNode(Integer popularity, Set<Song> songSet) {
+        _popularity = popularity;
+        _songSet = songSet;
     }
 
     public Set<Song> getSongSet() {
-    	return _songSet;
+        return _songSet;
     }
 
     public Integer getPopularity() {
-    	return _popularity;
+        return _popularity;
     }
 
     @Override
-	public int compareTo(Object other) {
-    	if (_popularity < ((PlaylistNode)other).getPopularity()) {
-    	    return -1;
-    	}
-    	if (_popularity > ((PlaylistNode)other).getPopularity()) {
-    	    return 1;
-    	}
-    	return 0;
-	}	
+    public int compareTo(Object other) {
+        if (_popularity < ((PlaylistNode)other).getPopularity()) {
+            return -1;
+        }
+        if (_popularity > ((PlaylistNode)other).getPopularity()) {
+            return 1;
+        }
+        return 0;
+    }   
 }

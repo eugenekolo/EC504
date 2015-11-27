@@ -26,17 +26,17 @@ package algore;
 import java.util.HashMap;
 
 public class SongIdToTitleMap {
-	public HashMap<Integer, String> _SongIdToTitleMap;
+    public HashMap<Integer, String> _SongIdToTitleMap;
 
-	public SongIdToTitleMap() {
-		_SongIdToTitleMap = new HashMap<Integer, String>();
-	}
+    public SongIdToTitleMap() {
+        _SongIdToTitleMap = new HashMap<Integer, String>();
+    }
 
-	public void putSong(Integer id, String song) {
-		_SongIdToTitleMap.put(id, song);
-	}
+    public void putSong(Integer id, String song) {
+        _SongIdToTitleMap.put(id, song);
+    }
 
-	public String getSong(Integer id) {
-		return _SongIdToTitleMap.get(id);
-	}
+    public String getSong(Integer id) {
+        return _SongIdToTitleMap.get(id);
+    }
 }

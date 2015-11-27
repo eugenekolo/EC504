@@ -27,10 +27,10 @@ import java.util.Set;
 
 public class Song implements Comparable {
     public String _title;
-	public Integer _popularity;
+    public Integer _popularity;
     public PlaylistNode _bestPlaylist;
 
-	public Song(String title) {
+    public Song(String title) {
         _title = title;
         _popularity = 0;
     }

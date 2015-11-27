@@ -36,26 +36,26 @@ https://commons.apache.org/proper/commons-collections/apidocs/org/apache/commons
 */
 // TODO(eugenek): Be nice if could traverse the tree 1 letter at a time.
 public class AutocompleteDB {
-	public PatriciaTrie<String> _SongTrie;
+    public PatriciaTrie<String> _SongTrie;
 
-	public AutocompleteDB() {
- 		_SongTrie = new PatriciaTrie<String>();
+    public AutocompleteDB() {
+        _SongTrie = new PatriciaTrie<String>();
     }
 
-	public void putSong(String song) {
-		_SongTrie.put(song, song);
-	}
+    public void putSong(String song) {
+        _SongTrie.put(song, song);
+    }
 
-	public SortedMap<String, String> getPrefixMap(String prefix) {
-		SortedMap<String, String> map = _SongTrie.prefixMap(prefix);
-		return map;
-	}
+    public SortedMap<String, String> getPrefixMap(String prefix) {
+        SortedMap<String, String> map = _SongTrie.prefixMap(prefix);
+        return map;
+    }
 
-	// TODO(eugenek): Should I really be using ArrayList and not built-in list[]?
-	public ArrayList<String> getPrefixList(String prefix) {
-		SortedMap<String, String> map = getPrefixMap(prefix);
-		ArrayList<String> list = new ArrayList<String>(map.values());
-		return list;
-	}
+    // TODO(eugenek): Should I really be using ArrayList and not built-in list[]?
+    public ArrayList<String> getPrefixList(String prefix) {
+        SortedMap<String, String> map = getPrefixMap(prefix);
+        ArrayList<String> list = new ArrayList<String>(map.values());
+        return list;
+    }
 
 }
