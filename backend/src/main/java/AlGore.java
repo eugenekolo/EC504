@@ -17,6 +17,7 @@ import static spark.Spark.*;
 import spark.ModelAndView;
 import spark.template.mustache.MustacheTemplateEngine;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class AlGore {
 
@@ -54,10 +55,11 @@ public class AlGore {
         }
 
         // TODO(eugenek): This is a small test for now. Remove at release.
-        ArrayList<String> songTitles = mAutocompleteDB.getPrefixList("Obses"); // Should return 3 items
+        /*ArrayList<String> songTitles = mAutocompleteDB.getPrefixList("Obses"); // Should return 3 items
         for (String songTitle : songTitles) {
             System.out.println(songTitle);
         }
+        */
 
         System.out.println("[*] Initialized data structures");
 
@@ -69,7 +71,7 @@ public class AlGore {
         externalStaticFileLocation("../frontend"); // Serve HTML from the frontend directory
         // TODO(eugenek): Look into setSecure to keep the API channel private.
 
-
+        System.out.println("[*] Started backend webserver");
         /****************************
         * Route programming
         ****************************/
@@ -86,7 +88,7 @@ public class AlGore {
             // TODO(eugenek): For bringup right now
             res.status(200);
             res.body("Successfully added playlists");
-            return toJson(res);
+            return mapToJson(res);
         });
 
         /** GET /api/getTop8
@@ -99,18 +101,18 @@ public class AlGore {
         get("/api/getTop8", (req, res) -> {
             String body = req.body();
 
-            HashMap top8 = new HashMap<String, String>();
+            HashMap<Integer, String> top8 = new HashMap<Integer, String>();
             // TODO(eugenek): For bringup right now
-            top8.put("1", "TestSong_1");
-            top8.put("2", "TestSong_2");
-            top8.put("3", "TestSong_3");
-            top8.put("4", "TestSong_4");
-            top8.put("5", "TestSong_5");
-            top8.put("6", "TestSong_6");
-            top8.put("7", "TestSong_7");
-            top8.put("8", "TestSong_8");
+            top8.put(1, "TestSong_1");
+            top8.put(2, "TestSong_2");
+            top8.put(3, "TestSong_3");
+            top8.put(4, "TestSong_4");
+            top8.put(5, "TestSong_5");
+            top8.put(6, "TestSong_6");
+            top8.put(7, "TestSong_7");
+            top8.put(8, "TestSong_8");
 
-            return toJson(top8);
+            return mapToJson(top8);
         });
 
         /** GET /api/getAutocomplete
@@ -121,10 +123,19 @@ public class AlGore {
         *   @res: JSON with top 5 most popular autocompleted songs
         *       {"1": "Hello Baby", "2": "Hellozzz", ...}
         */
-        get("/api/getAutocomplete", (req, res) -> {
+        post("/api/getAutocomplete", (req, res) -> {
+            //TODO(eugenek): Limit return to top 5 most popular;
             String body = req.body();
+            HashMap<String, String> json = jsonToMap(body);    
 
-            return "[GET] getAutocomplete";
+            ArrayList<String> songs = mAutocompleteDB.getPrefixList(json.get("song"));
+            HashMap<Integer, String> autoCompleteSongs = new HashMap<Integer, String>();
+            for (int i = 0; i < songs.size(); i++) {
+                String song = songs.get(i);
+                autoCompleteSongs.put(i, song);
+            }
+        
+            return mapToJson(autoCompleteSongs);
         });
 
         /** GET /api/suggestPlaylist
@@ -149,9 +160,15 @@ public class AlGore {
     /**
     * Convert a POJO to a JSON string
     */
-    public static String toJson(Object object) {
+    public static String mapToJson(Object object) {
         Gson gson = new Gson();
         return gson.toJson(object);
+    }
+
+    public static HashMap<String, String> jsonToMap(String json) {
+        HashMap<String,String> map = new Gson().fromJson(json, 
+            new TypeToken<HashMap<String, String>>(){}.getType());
+        return map;
     }
 
 } // END Class AlGore

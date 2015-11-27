@@ -11,6 +11,7 @@ https://apache.googlesource.com/commons-collections/+/COLLECTIONS_4_0/src/test/j
 
 https://commons.apache.org/proper/commons-collections/apidocs/org/apache/commons/collections4/trie/PatriciaTrie.html#headMap(K)
 */
+// TODO(eugenek): Be nice if could traverse the tree 1 letter at a time.
 public class AutocompleteDB {
 	public PatriciaTrie<String> _SongTrie;
 
