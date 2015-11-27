@@ -55,22 +55,27 @@ public class PlaylistDB {
     * @return: true if playlist was added, false otherwise.
     * @note: A DBEQ only needs addPlaylist and a maximum size specified to handle deleting Playlists too 
     */
-    public void addPlaylist(PlaylistNode playlist) {
+    public boolean addPlaylist(PlaylistNode playlist) {
         // TODO(eugenek): You can add the same playlist multiple times
         // TODO(eugenek): Is that a problem??
         /* Figure out how much popularity of each song to change by */
         Integer amountToChange = 0;
+        boolean isAdded = false;
+
         if (_playlistDB.size() >= 1024) {
             PlaylistNode leastPopular = _playlistDB.peek();
             if (playlist.getPopularity() > leastPopular.getPopularity()) {
                 amountToChange += playlist.getPopularity();
                 amountToChange -= leastPopular.getPopularity();
+                isAdded = true;
             } else {
                 amountToChange = 0;
+                isAdded = false;
             }
 
         } else {
             amountToChange += playlist.getPopularity();
+            isAdded = true;
         }
 
         /* Add the playlist to the database */
@@ -82,6 +87,8 @@ public class PlaylistDB {
             song.setPopularity(song.getPopularity() + amountToChange);
             song.setBestPlaylist(playlist);
         }
+
+        return isAdded;
     }
 
     public ArrayList<PlaylistNode> getTop8List() {

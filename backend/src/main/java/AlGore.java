@@ -112,8 +112,10 @@ public class AlGore {
         *   @res: 200 if successful
         */
         post("/api/addPlaylist", (req, res) -> {
+            // TODO(eugenek): Tested. Use files three99stwo0s.txt, etc.
             HashMap<String, String> json = jsonToMap(req.body());
-            Integer amountAdded = 0;
+            Integer attemptedAdd = 0;
+            Integer actualAdd = 0;
 
             /* Don't need the file name. */
             String data;
@@ -139,15 +141,19 @@ public class AlGore {
 
                 /* Add the playlistNode to the playListDB*/
                 PlaylistNode playlist = new PlaylistNode(popularity, songSet);
-                mPlaylistDB.addPlaylist(playlist);
-
-                amountAdded += 1;
                 playlistLine = reader.readLine();
+
+                /* Server side logging */
+                boolean isActuallyAdded = mPlaylistDB.addPlaylist(playlist);
+                if (isActuallyAdded) {
+                    actualAdd += 1;
+                }
+                attemptedAdd += 1;
             }
 
-            // TODO(eugenek): Change this to attempted to add: x, actually added: y
             /* Server side logging */
-            System.out.println("[+] addPlaylist successful added " + amountAdded + " playlists");
+            System.out.println("[addPlaylist] attempted: " + attemptedAdd + " actual: " + actualAdd + " playlists");
+            System.out.println("[addPlaylist] size of playlistDB: " + mPlaylistDB._playlistDB.size());
 
             res.status(200);
             return "Successfully added playlists";
@@ -164,7 +170,7 @@ public class AlGore {
         *       }
         */
         get("/api/getTop8", (req, res) -> {
-            //TODO(eugenek): Test this is returning top 8 based on popularity
+            //TODO(eugenek): Test this is returning top 8 based on popularity. Seems to return popularity:17 always?
             ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
             HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
 
@@ -185,9 +191,9 @@ public class AlGore {
             }
 
             /* Server side logging */
-            System.out.println("[+] getTop8 successful returning: ");
+            System.out.println("[getTop8] successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
-                System.out.println("[+]\t" + i + ". " + top8Map.get(i));
+                System.out.println("[+]\t" + i + ". " + top8Map.get(i).get("title") + "\t" + top8Map.get(i).get("popularity"));
             }
 
             return mapToJson(top8Map);
@@ -202,6 +208,7 @@ public class AlGore {
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         */
         post("/api/getAutocomplete", (req, res) -> {
+            // TODO(eugenek): Test this. Appears to return reverse order of what we want.
             // TODO(eugenek): Make this case insensitive??
             HashMap<String, String> json = jsonToMap(req.body());    
 
@@ -232,7 +239,7 @@ public class AlGore {
             }
 
             /* Server side logging */
-            System.out.println("[+] getAutocomplete successful, looking for \"" + json.get("song") + "\"");
+            System.out.println("[getAutocomplete] successful, looking for \"" + json.get("song") + "\"");
             for (Song song : songList) { // Should be <= 4
                 System.out.println("[+]\tfound: " + song.getTitle() + " " 
                     + song.getPopularity());
@@ -267,6 +274,9 @@ public class AlGore {
             mostPopular.put("mostPopular", playlistTitle);
 
             /* Server side logging */
+            System.out.println("[suggestPlaylist] looking for best playlist with: \"" + json.get("song") + "\"");
+            System.out.println("[+]\tfound: \"" + playlistTitle + "\"");
+
             return mapToJson(mostPopular);
         });
         
