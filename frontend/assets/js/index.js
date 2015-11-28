@@ -105,4 +105,14 @@ $(function() {
         playlist = playlist.slice(0, -2).replace(/##/g, ', ').replace(/\\/g, '');
         return playlist;
     }
+    // Clicking on an autocomplete suggestion changes the enter song text
+    // to the autocomplete suggestion and updates the suggested playlist
+    $('option.song-autocomplete').click(function() {
+        var enterSong = $('#enter-song');
+        enterSong.val($(this).val());
+        var e = $.Event('keyup');
+        e.which = 13;
+        enterSong.trigger(e);
+        enterSong.focus();
+    });
 });
