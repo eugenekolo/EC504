@@ -2,18 +2,7 @@
 * Al Gore Rhythms 
 * Playlist Application Project
 *
-* This is the backend part. Including the web and data structure logic.
 *
-* Features:
-*   + Autocomplete song, and list top 4 songs based on popularity
-*   + List top 8 most popular playlists
-*   + Add up to 1024 playlists
-*   + Suggest most popular playlist with input song
-*   + Restful API
-*   + Hackable (separated front end, separated data structures)
-*   + Always returns JSON
-*   + Efficient
-*   + Nice frontend 
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
@@ -44,8 +33,6 @@ public class PlaylistDB {
     * @return: true if playlist was added, false otherwise.
     */
     public boolean addPlaylist(PlaylistNode playlist) {
-        // TODO(eugenek): You can add the same playlist multiple times
-        // TODO(eugenek): Is that a problem??
         /* Figure out if to add the playlist if to update the top8, and how much to update 
         the popularity of each song by */
         Integer amountToChange = 0;

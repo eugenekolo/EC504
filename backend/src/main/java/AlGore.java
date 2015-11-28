@@ -14,14 +14,11 @@
 *   + List top 8 most popular playlists
 *   + Add up to 1024 playlists
 *   + Suggest most popular playlist with input song
-*   + Restful API
+*   + Restful API (Spark Java)
 *   + Hackable (separated front end, separated data structures)
 *   + Always returns JSON
 *   + Efficient
 *   + Nice frontend 
-*
-* Todo:
-*   + Should I really be using ArrayList and not built-in list[]?
 *
 ********************************************************************************/
 
@@ -101,7 +98,8 @@ public class AlGore {
         /****************************
         * Route programming
         ****************************/
-        /** POST /api/addPlaylist
+
+        /** POST /api/addPlaylist *******************************************************
         *   Gets fileData and parses out the individual playlists and adds them to the database
         *
         *   @note: Updating the playlistDB also updates SongStringToPopMap   
@@ -109,7 +107,7 @@ public class AlGore {
         *   @req: JSON of <fileName> assosicated with <fileData>
         *       {<fileName>: <fileData>}
         *   @res: 200 if successful
-        */
+        ********************************************************************************/
         post("/api/addPlaylist", (req, res) -> {
             // TODO(eugenek): How do you handle specifiying popularity when doing 1 entry?
             HashMap<String, String> json = jsonToMap(req.body());
@@ -158,7 +156,8 @@ public class AlGore {
             return "Successfully added playlists";
         });
 
-        /** GET /api/getTop8
+
+        /** GET /api/getTop8 ************************************************************
         *   Returns Top 8 playlists based on popularity.
         *
         *   @req: blank
@@ -167,7 +166,7 @@ public class AlGore {
         *        "2":{"title":"Ferrari##Lamboughini##BMW", "popularity": "78"},
         *         ...
         *       }
-        */
+        ********************************************************************************/
         get("/api/getTop8", (req, res) -> {
             ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8();
             HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
@@ -186,20 +185,22 @@ public class AlGore {
             /* Server side logging */
             System.out.println("[getTop8] successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
-                System.out.println("[+]\t" + i + ". " + top8Map.get(i).get("title") + "\t" + top8Map.get(i).get("popularity"));
+                System.out.println("[+]\t" + i + ". " + top8Map.get(i).get("title") + "\t" +
+                                   top8Map.get(i).get("popularity"));
             }
 
             return mapToJson(top8Map);
         });
 
-        /** POST /api/getAutocomplete
+
+        /** POST /api/getAutocomplete ****************************************************
         *   Gets a string and searches the database for the most popular matches
         *
         *   @req: JSON of "song" matched to partial completion
         *       {"song": "Obses"}
         *   @res: JSON with top 5 most popular autocompleted songs
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
-        */
+        *********************************************************************************/
         post("/api/getAutocomplete", (req, res) -> {
             // TODO(eugenek): Make this case insensitive??
             // TODO(eugenek): Change 0 default popularity to default?
@@ -241,14 +242,16 @@ public class AlGore {
             return mapToJson(songTitlesMap);
         });
 
-        /** POST /api/suggestPlaylist
+
+        /** POST /api/suggestPlaylist ***************************************************
         *   Gets a song title and suggests the most popular playlist that has it
         *
         *   @req: JSON of "song" matches to <songTitle>
         *       {"song": "Obsesionado"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver##El Celoso##El Columpio##La Gran Senora##"}
-        */
+        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver##El Celoso /
+        *                    ##El Columpio##La Gran Senora##"}
+        ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    
             String songTitle = json.get("song");
@@ -273,22 +276,33 @@ public class AlGore {
             return mapToJson(mostPopular);
         });
         
+
     }
+
 
     /****************************
     /* Helper functions         
     ****************************/
+    /**
+    * Converts an POJO to a JSON string 
+    */
     public static String mapToJson(Object object) {
         Gson gson = new Gson();
         return gson.toJson(object);
     }
 
+    /** 
+    * Converts a JSON string to a HashMap.
+    */
     public static HashMap<String, String> jsonToMap(String json) {
         HashMap<String,String> map = new Gson().fromJson(json, 
             new TypeToken<HashMap<String, String>>(){}.getType());
         return map;
     }
 
+    /**
+    * Converts a Set<Song> to a string 
+    */
     public static String songSetToString(Set<Song> songSet) {
         String playlistSongString = "";
         for (Song song : songSet) {
@@ -297,8 +311,11 @@ public class AlGore {
         return playlistSongString;
     }
 
+    /**
+    * Converts a PlaylistNode to a string
+    */
     public static String playlistToTitle(PlaylistNode playlist) {
         return songSetToString(playlist.getSongSet());
     }
 
-} // END Class AlGore
+}
