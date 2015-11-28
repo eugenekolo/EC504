@@ -112,7 +112,7 @@ public class AlGore {
         *   @res: 200 if successful
         */
         post("/api/addPlaylist", (req, res) -> {
-            // TODO(eugenek): Tested. Use files three99stwo0s.txt, etc.
+            // TODO(eugenek): How do you handle specifiying popularity when doing 1 entry?
             HashMap<String, String> json = jsonToMap(req.body());
             Integer attemptedAdd = 0;
             Integer actualAdd = 0;
@@ -170,21 +170,15 @@ public class AlGore {
         *       }
         */
         get("/api/getTop8", (req, res) -> {
-            //TODO(eugenek): Test this is returning top 8 based on popularity. Seems to return popularity:17 always?
-            ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8List();
+            ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8();
             HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
 
             // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
             for (int i = 0; i < top8List.size(); i++) {
                 PlaylistNode playlist = top8List.get(i);
-                Set<Song> songSet = playlist.getSongSet();
-                String playlistSongString = "";
-                for (Song song : songSet) {
-                    playlistSongString += song.getTitle() + "##";
-                }
 
                 HashMap<String, String> playlistData = new HashMap<String,String>();
-                playlistData.put("title", playlistSongString);
+                playlistData.put("title", playlistToTitle(playlist));
                 playlistData.put("popularity", String.valueOf(playlist.getPopularity()));
 
                 top8Map.put(i, playlistData);
@@ -208,8 +202,8 @@ public class AlGore {
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         */
         post("/api/getAutocomplete", (req, res) -> {
-            // TODO(eugenek): Test this. Appears to return reverse order of what we want.
             // TODO(eugenek): Make this case insensitive??
+            // TODO(eugenek): Change 0 default popularity to default?
             HashMap<String, String> json = jsonToMap(req.body());    
 
             ArrayList<String> songTitles = mAutocompleteDB.getPrefixList(json.get("song"));
@@ -230,7 +224,7 @@ public class AlGore {
                     }
                 }
             }
-            Collections.sort(songList);
+            Collections.sort(songList, Collections.reverseOrder());
 
             /* Converted the sorted song set to a song title map index by rank */
             HashMap<Integer, String> songTitlesMap = new HashMap<Integer, String>();
