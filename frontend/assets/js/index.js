@@ -66,7 +66,8 @@ $(function() {
             $('option.song-autocomplete').text('');
         } else {
             var data = {};
-            data['song'] = $('#enter-song').val(); // Gets the song name text
+            data['song'] = $('#enter-song').val().toLowerCase(); // Gets the song name text
+            console.log(data['song']);
             $.ajax({
                 type: 'POST',
                 url: '/api/getAutocomplete',
@@ -101,20 +102,24 @@ $(function() {
     /*************************************
      * Helper functions
      **************************************/
-    // keypress jquery event handler
-    $('#enter-song').bind("keyup", function(e) {
-        // if (e.keyCode == 13) { // start post method after enter key pressed
-        //     e.preventDefault();
-        //     suggestPlaylist();
-        // }
-        suggestPlaylist();
-        autocomplete();
-    });
     // Formats the playlist to remove ##'s and \'s
     function formatPlaylist(playlist) {
         playlist = playlist.slice(0, -2).replace(/##/g, ', ').replace(/\\/g, '');
         return playlist;
     }
+    /*************************************
+     * Event Listeners
+     **************************************/
+    // keypress jquery event handler
+    $('#enter-song').bind("keyup", function(e) {
+        if (e.keyCode == 39) { // start post method after enter key pressed
+            // $('option.song-autocomplete:eq(' + 1 + ')').focus();
+            $('option.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
+        } else {
+            suggestPlaylist();
+            autocomplete();
+        }
+    });
     // Clicking on an autocomplete suggestion changes the enter song text
     // to the autocomplete suggestion and updates the suggested playlist
     $('option.song-autocomplete').click(function() {
@@ -125,4 +130,5 @@ $(function() {
         enterSong.trigger(e); // Triggers keyup event listener for enter song text input
         enterSong.focus();
     });
+
 });
