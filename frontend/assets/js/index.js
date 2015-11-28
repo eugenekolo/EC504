@@ -117,6 +117,10 @@ $(function() {
             $('#enter-song').blur();
             $("select:first").focus();
             $('option.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
+            for (var i = 1; i <= 3; i++) {
+                $('option.song-autocomplete:eq(' + i + ')').prop('selected', false);
+            }
+            $('#suggested-playlist').prop('selected',false);
         } else {
             // For each key pressed a playlist and 4 songs are suggested
             suggestPlaylist();
