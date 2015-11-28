@@ -50,7 +50,7 @@ $(function() {
                 // On success, below jquery suggests playlist with highest popularity containing entered song
                 console.log('Success!');
                 var hash = JSON.parse(data);
-                // $('#suggested-playlist').
+                $('#suggested-playlist').text(formatPlaylist(hash['mostPopular']));
             },
             error: function(data) {
                 // alert('Failed to retrieve Top8 content');
