@@ -56,7 +56,6 @@ public class AlGore {
         mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
-        //TODO(eugenek): Consider song author too?
         File song_list_txt = new File("./assets/song_list.txt");
         try (BufferedReader reader = new BufferedReader(new FileReader(song_list_txt))) {
             String songLine = reader.readLine();
@@ -103,7 +102,7 @@ public class AlGore {
         /** POST /api/addPlaylist *******************************************************
         *   Gets fileData and parses out the individual playlists and adds them to the database
         *
-        *   @note: Updating the playlistDB also updates SongStringToPopMap   
+        *   @note: Updating the playlistDB also updates SongTitleToSongMap   
         *
         *   @req: JSON of <fileName> assosicated with <fileData>
         *       {<fileName>: <fileData>}
@@ -162,16 +161,15 @@ public class AlGore {
         *   Returns Top 8 playlists based on popularity.
         *
         *   @req: blank
-        *   @res: JSON map of top 8 playlists song list sepated by ##
-        *       {"1":{"title":"Apple##Orange##Watermelon", "popularity": "92"},
-        *        "2":{"title":"Ferrari##Lamboughini##BMW", "popularity": "78"},
+        *   @res: JSON map of top 8 playlists song list sepated by ##sep##
+        *       {"1":{"title":"Apple##sep##Orange##sep##Watermelon", "popularity": "92"},
+        *        "2":{"title":"Ferrari##sep##Lamboughini##sep##BMW", "popularity": "78"},
         *         ...
         *       }
         ********************************************************************************/
         get("/api/getTop8", (req, res) -> {
             ArrayList<Playlist> top8List = mPlaylistDB.getTop8();
 
-            // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
             /* Convert the top8 list to a JSON map */
             HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
             for (int i = 0; i < top8List.size(); i++) {
@@ -198,13 +196,14 @@ public class AlGore {
         /** POST /api/getAutocomplete ****************************************************
         *   Gets a string and searches the database for the most popular matches
         *
+        *   @note: Case insensitive. 
+        *
         *   @req: JSON of "song" matched to partial completion
-        *       {"song": "Obses"}
+        *       {"song": "obses"}
         *   @res: JSON with top 5 most popular autocompleted songs
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         *********************************************************************************/
         post("/api/getAutocomplete", (req, res) -> {
-            // TODO(eugenek): Change 0 default popularity to default null?
             HashMap<String, String> json = jsonToMap(req.body());    
             String lowerCaseSong = json.get("song").toLowerCase();
             ArrayList<String> concatTitles = mAutocompleteDB.getPrefixList(lowerCaseSong);
@@ -258,8 +257,8 @@ public class AlGore {
         *   @req: JSON of "song" matches to <songTitle>
         *       {"song": "Obsesionado"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver##El Celoso /
-        *                    ##El Columpio##La Gran Senora##"}
+        *       {"mostPopular":"Obsesionado##sep##Me Gusta Todo De Ti##sep##La Promocion##sep##No Puedo Volver
+        *            ##sep##El Celoso##sep##El Columpio##sep##La Gran Senora##"}
         ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    
@@ -315,7 +314,7 @@ public class AlGore {
     public static String songListToString(ArrayList<Song> songList) {
         String playlistSongString = "";
         for (Song song : songList) {
-            playlistSongString += song.getTitle() + "##";
+            playlistSongString += song.getTitle() + "##sep##";
         }
         return playlistSongString;
     }
