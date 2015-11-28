@@ -74,7 +74,8 @@ $(function() {
                         // An autocomplete option is empty if the hash did not return the 
                         // specified index
                         $('option.song-autocomplete:eq(' + i + ')').text('');
-                    } else { // Otherwise fill the autocomplete option with the corresponding song name
+                    } else {
+                        // Otherwise fill the autocomplete option with the corresponding song name
                         $('option.song-autocomplete:eq(' + i + ')').text(hash[i].replace(/\\/g, ''));
                     }
                 }
@@ -91,11 +92,12 @@ $(function() {
      * Helper functions
      **************************************/
     // keypress jquery event handler
-    $('#enter-song').bind("keyup", function(e) { 
-        if (e.keyCode == 13) { // start post method after enter key pressed
-            e.preventDefault();
-            suggestPlaylist();
-        }
+    $('#enter-song').bind("keyup", function(e) {
+        // if (e.keyCode == 13) { // start post method after enter key pressed
+        //     e.preventDefault();
+        //     suggestPlaylist();
+        // }
+        suggestPlaylist();
         autocomplete();
     });
     // Formats the playlist to remove ##'s and \'s
