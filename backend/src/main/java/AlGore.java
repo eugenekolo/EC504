@@ -161,9 +161,9 @@ public class AlGore {
         *   Returns Top 8 playlists based on popularity.
         *
         *   @req: blank
-        *   @res: JSON map of top 8 playlists song list sepated by ##sep##
-        *       {"1":{"title":"Apple##sep##Orange##sep##Watermelon", "popularity": "92"},
-        *        "2":{"title":"Ferrari##sep##Lamboughini##sep##BMW", "popularity": "78"},
+        *   @res: JSON map of top 8 playlists song list sepated by ##
+        *       {"1":{"title":"Apple##Orange##Watermelon", "popularity": "92"},
+        *        "2":{"title":"Ferrari##Lamboughini##BMW", "popularity": "78"},
         *         ...
         *       }
         ********************************************************************************/
@@ -257,8 +257,8 @@ public class AlGore {
         *   @req: JSON of "song" matches to <songTitle>
         *       {"song": "Obsesionado"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado##sep##Me Gusta Todo De Ti##sep##La Promocion##sep##No Puedo Volver
-        *            ##sep##El Celoso##sep##El Columpio##sep##La Gran Senora##"}
+        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver
+        *            ##El Celoso##El Columpio##La Gran Senora##"}
         ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    
@@ -314,7 +314,7 @@ public class AlGore {
     public static String songListToString(ArrayList<Song> songList) {
         String playlistSongString = "";
         for (Song song : songList) {
-            playlistSongString += song.getTitle() + "##sep##";
+            playlistSongString += song.getTitle() + "##";
         }
         return playlistSongString;
     }
