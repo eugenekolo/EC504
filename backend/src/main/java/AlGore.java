@@ -21,7 +21,6 @@
 *   + Nice frontend 
 *
 * Todo:
-*   + Test out Guava.DBEQ vs PriorityQueue
 *   + Should I really be using ArrayList and not built-in list[]?
 *
 ********************************************************************************/
