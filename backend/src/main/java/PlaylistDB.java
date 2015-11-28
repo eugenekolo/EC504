@@ -14,7 +14,6 @@ package algore;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
-import java.util.Set;
 import java.util.Collections;
 
 public class PlaylistDB {
@@ -56,8 +55,8 @@ public class PlaylistDB {
         if (isAdded) {
             _playlistDB.add(playlist);
             /* Update each song's best playlist and popularity */
-            Set<Song> songSet = playlist.getSongSet();
-            for (Song song : songSet) {
+            ArrayList<Song> songList = playlist.getSongList();
+            for (Song song : songList) {
                 song.setPopularity(song.getPopularity() + amountToChange);
                 song.setBestPlaylist(playlist);
             }

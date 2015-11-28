@@ -35,7 +35,7 @@ public class AutocompleteDB {
 
     public SortedMap<String, String> getPrefixMap(String prefix) {
         if (prefix == null || prefix == "") {
-            // TODO(eugenek): Can filter here of Brax doesn't.
+            // TODO(eugenek): Can filter here if Brax doesn't.
         }
         SortedMap<String, String> map = _SongTrie.prefixMap(prefix);
         return map;

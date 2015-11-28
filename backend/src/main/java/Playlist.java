@@ -11,27 +11,26 @@
 * @since: November 25, 2015
 ********************************************************************************/
 
-// TODO(eugenek): Change songset to songlist?
 package algore;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 public class Playlist implements Comparable {
     public Integer _popularity;
-    public Set<Song> _songSet;
+    public ArrayList<Song> _songList;
 
-    public Playlist(Integer popularity, Set<Song> songSet) {
+    public Playlist(Integer popularity, ArrayList<Song> songList) {
         _popularity = popularity;
-        _songSet = songSet;
+        _songList = songList;
     }
 
 
-    public Set<Song> getSongSet() {
-        return _songSet;
+    public ArrayList<Song> getSongList() {
+        return _songList;
     }
 
-    public void setSongSet(Set<Song> songSet) {
-        _songSet = songSet;
+    public void setSongList(ArrayList<Song> songList) {
+        _songList = songList;
     }
 
 

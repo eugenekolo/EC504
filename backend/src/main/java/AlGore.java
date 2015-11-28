@@ -30,8 +30,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Collections;
 
 import static spark.Spark.*;
@@ -49,6 +47,7 @@ public class AlGore {
 
     public static void main(String[] args) {
         System.out.println("[*] Al Gore Rhythms started!");
+
         /****************************
         * Initialize data structures 
         ****************************/
@@ -67,7 +66,6 @@ public class AlGore {
                 String songId = songLineProps[0];
                 String songTitle = songLineProps[1];
                 String songAuthor = songLineProps[2];
-
                 mSongIdToTitleMap.putSong(songId, songTitle);
 
                 /* Map song titles -> song objects */
@@ -75,7 +73,7 @@ public class AlGore {
                 mSongTitleToSongMap.putSong(songTitle, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
-                /* Store a lowercase version and a case sensitive version */
+                /* Store a concated lowercase version and a case sensitive version */
                 mAutocompleteDB.putSong(songTitle.toLowerCase() + "##sep##" + songTitle);
 
                 songLine = reader.readLine();
@@ -132,15 +130,15 @@ public class AlGore {
                 Integer popularity = Integer.parseInt(playlistLineSplit[1]);
 
                 /* Map the input song ids to Song objects*/
-                Set<Song> songSet = new HashSet<Song>();
+                ArrayList<Song> songList = new ArrayList<Song>();
                 for (int i = 0; i < songIdList.length; i++) {
                     String songTitle = mSongIdToTitleMap.getSong(songIdList[i]);
                     Song song = mSongTitleToSongMap.getSong(songTitle);
-                    songSet.add(song);
+                    songList.add(song);
                 }
 
                 /* Add the Playlist to the playListDB*/
-                Playlist playlist = new Playlist(popularity, songSet);
+                Playlist playlist = new Playlist(popularity, songList);
                 playlistLine = reader.readLine();
 
                 /* Server side logging */
@@ -312,11 +310,11 @@ public class AlGore {
     }
 
     /**
-    * Converts a Set<Song> to a string 
+    * Converts a ArrayList<Song> to a string 
     */
-    public static String songSetToString(Set<Song> songSet) {
+    public static String songListToString(ArrayList<Song> songList) {
         String playlistSongString = "";
-        for (Song song : songSet) {
+        for (Song song : songList) {
             playlistSongString += song.getTitle() + "##";
         }
         return playlistSongString;
@@ -326,7 +324,7 @@ public class AlGore {
     * Converts a Playlist to a string
     */
     public static String playlistToTitle(Playlist playlist) {
-        return songSetToString(playlist.getSongSet());
+        return songListToString(playlist.getSongList());
     }
 
 }
