@@ -73,7 +73,7 @@ public class AlGore {
                 mSongIdToTitleMap.putSong(songId, songTitle);
 
                 /* Map song titles -> song objects */
-                Song song = new Song(songTitle);
+                Song song = new Song(songTitle, songAuthor);
                 mSongTitleToSongMap.putSong(songTitle, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
@@ -140,8 +140,8 @@ public class AlGore {
                     songSet.add(song);
                 }
 
-                /* Add the playlistNode to the playListDB*/
-                PlaylistNode playlist = new PlaylistNode(popularity, songSet);
+                /* Add the Playlist to the playListDB*/
+                Playlist playlist = new Playlist(popularity, songSet);
                 playlistLine = reader.readLine();
 
                 /* Server side logging */
@@ -172,12 +172,13 @@ public class AlGore {
         *       }
         ********************************************************************************/
         get("/api/getTop8", (req, res) -> {
-            ArrayList<PlaylistNode> top8List = mPlaylistDB.getTop8();
-            HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
+            ArrayList<Playlist> top8List = mPlaylistDB.getTop8();
 
             // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
+            /* Convert the top8 list to a JSON map */
+            HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
             for (int i = 0; i < top8List.size(); i++) {
-                PlaylistNode playlist = top8List.get(i);
+                Playlist playlist = top8List.get(i);
 
                 HashMap<String, String> playlistData = new HashMap<String,String>();
                 playlistData.put("title", playlistToTitle(playlist));
@@ -266,7 +267,7 @@ public class AlGore {
                 res.status(400);
                 return "Sorry, song doesn't exist, or no playlist contains it.";
             }
-            PlaylistNode bestPlaylist = song.getBestPlaylist();
+            Playlist bestPlaylist = song.getBestPlaylist();
             String playlistTitle = playlistToTitle(bestPlaylist);
 
             /* Convert playlist string to a JSON map */
@@ -316,9 +317,9 @@ public class AlGore {
     }
 
     /**
-    * Converts a PlaylistNode to a string
+    * Converts a Playlist to a string
     */
-    public static String playlistToTitle(PlaylistNode playlist) {
+    public static String playlistToTitle(Playlist playlist) {
         return songSetToString(playlist.getSongSet());
     }
 

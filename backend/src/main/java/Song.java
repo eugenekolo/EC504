@@ -19,7 +19,7 @@ public class Song implements Comparable {
     public String _title;
     public String _author;
     public Integer _popularity;
-    public PlaylistNode _bestPlaylist;
+    public Playlist _bestPlaylist;
 
     public Song(String title) {
         _title = title;
@@ -68,7 +68,7 @@ public class Song implements Comparable {
     * Sets the bestPlaylist if the input's popularity is greater
     * return true on replacing, and false otherwise.
     */
-    public boolean setBestPlaylist(PlaylistNode bestPlaylist) {
+    public boolean setBestPlaylist(Playlist bestPlaylist) {
         if (_bestPlaylist == null) {
             _bestPlaylist = bestPlaylist;
             return true;
@@ -82,7 +82,7 @@ public class Song implements Comparable {
         return false;
     }
     
-    public PlaylistNode getBestPlaylist() {
+    public Playlist getBestPlaylist() {
         return _bestPlaylist;
     }
 
