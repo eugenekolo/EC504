@@ -77,7 +77,8 @@ public class AlGore {
                 mSongTitleToSongMap.putSong(songTitle, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
-                mAutocompleteDB.putSong(songTitle);
+                /* Store a lowercase version and a case sensitive version */
+                mAutocompleteDB.putSong(songTitle.toLowerCase() + "##sep##" + songTitle);
 
                 songLine = reader.readLine();
             }
@@ -207,31 +208,38 @@ public class AlGore {
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         *********************************************************************************/
         post("/api/getAutocomplete", (req, res) -> {
-            // TODO(eugenek): Make this case insensitive??
-            // TODO(eugenek): Change 0 default popularity to default?
+            // TODO(eugenek): Change 0 default popularity to default null?
             HashMap<String, String> json = jsonToMap(req.body());    
+            String lowerCaseSong = json.get("song").toLowerCase();
+            ArrayList<String> concatTitles = mAutocompleteDB.getPrefixList(lowerCaseSong);
 
-            ArrayList<String> songTitles = mAutocompleteDB.getPrefixList(json.get("song"));
+            /* Extract the case sensitive result */
+            ArrayList<String> songTitles = new ArrayList<String>();
+            for (String concatTitle : concatTitles) {
+                String[] bothTitles = concatTitle.split("##sep##");
+                songTitles.add(bothTitles[1]); // The case sensitive title
+            }
 
             /* Change the ArrayList of song titles to a sorted song list of max size 4*/
             ArrayList<Song> songList = new ArrayList<Song>();
-            for (int i = 0; i < songTitles.size(); i++) {
-                Song song = mSongTitleToSongMap.getSong(songTitles.get(i));
+            for (String songTitle : songTitles) {
+                Song song = mSongTitleToSongMap.getSong(songTitle);
+
+                // Filter songList to be the 4 most popular songs
                 if (songList.size() < 4) {
                     songList.add(song);
-                } else {
-                    Song minSong = Collections.min(songList);
-                    if (minSong.getPopularity() < song.getPopularity()) {
-                        songList.remove(minSong);
+                } 
+                else {
+                    Song worstSong = Collections.min(songList);
+                    if (worstSong.getPopularity() < song.getPopularity()) {
+                        songList.remove(worstSong);
                         songList.add(song);
-                    } else {
-                        // Do nothing, song popularity is less than the other 4 already
                     }
                 }
             }
             Collections.sort(songList, Collections.reverseOrder());
 
-            /* Converted the sorted song set to a song title map index by rank */
+            /* Converted the sorted song list to a song title map indexed by rank */
             HashMap<Integer, String> songTitlesMap = new HashMap<Integer, String>();
             for (int i = 0; i < songList.size(); i++) {
                 songTitlesMap.put(i, songList.get(i).getTitle());
