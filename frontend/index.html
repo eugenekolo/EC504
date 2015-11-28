@@ -71,7 +71,7 @@
                     <div class="col-xs-6">
                         <!-- /Input field -->
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter Song . . ." aria-describedby="basic-addon1">
+                            <input type="text" id="enter-song" class="form-control" placeholder="Enter Song . . ." aria-describedby="basic-addon1">
                         </div>
                         <!-- <div class="form-group">
                             <label for="comment">Results:</label>
@@ -80,11 +80,11 @@
                         <br>
                         <select overflow="hidden" multiple size="5" class="form-control">
                             <div class="table-alignment">
-                                <option class="multiple-select">0 (Suggested Playlist)</option>
-                                <option class="multiple-select">1 (Most Popular autocomplete)</option>
-                                <option class="multiple-select">2 (Second Most Popular autocomplete)</option>
-                                <option class="multiple-select">3 (Third Most Popular autocomplete)</option>
-                                <option class="multiple-select">4 (Least Most Popular autocomplete)</option>
+                                <option id="suggested-playlist" class="multiple-select">0 (Suggested Playlist)</option>
+                                <option class="multiple-select song-autocomplete">1 (Most Popular autocomplete)</option>
+                                <option class="multiple-select song-autocomplete">2 (Second Most Popular autocomplete)</option>
+                                <option class="multiple-select song-autocomplete">3 (Third Most Popular autocomplete)</option>
+                                <option class="multiple-select song-autocomplete">4 (Least Most Popular autocomplete)</option>
                             </div>
                         </select>
                     </div>
