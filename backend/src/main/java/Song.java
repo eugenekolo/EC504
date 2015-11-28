@@ -2,18 +2,8 @@
 * Al Gore Rhythms 
 * Playlist Application Project
 *
-* This is the backend part. Including the web and data structure logic.
-*
-* Features:
-*   + Autocomplete song, and list top 4 songs based on popularity
-*   + List top 8 most popular playlists
-*   + Add up to 1024 playlists
-*   + Suggest most popular playlist with input song
-*   + Restful API
-*   + Hackable (separated front end, separated data structures)
-*   + Always returns JSON
-*   + Efficient
-*   + Nice frontend 
+* This file implements a song structure.
+* A song has a title, author, popularity, and its best best playlist.
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
@@ -27,18 +17,34 @@ import java.util.Set;
 
 public class Song implements Comparable {
     public String _title;
+    public String _author;
     public Integer _popularity;
-    public PlaylistNode _bestPlaylist;
+    public Playlist _bestPlaylist;
 
     public Song(String title) {
         _title = title;
-        _popularity = 0;
+        _popularity = 0; // TODO(eugenek): Make this null?
+        _author = null;
+    }
+
+    public Song(String title, String author) {
+        _title = title;
+        _popularity = 0; // TODO(eugenek): Make this null?
+        _author = author;
     }
 
     public Song(String title, Integer popularity) {
         _title = title;
         _popularity = _popularity;
+        _author = null;
     }
+
+    public Song(String title, String author, Integer popularity) {
+        _title = title;
+        _popularity = _popularity;
+        _author = author;
+    }
+
 
     public void setPopularity(Integer popularity) {
         _popularity = popularity;
@@ -48,15 +54,21 @@ public class Song implements Comparable {
         return _popularity;
     }
 
+
     public String getTitle() {
         return _title;
     }
 
-    /** setBestPlaylist
+    public void setTitle(String title) {
+        _title = title;
+    }
+
+
+    /**
     * Sets the bestPlaylist if the input's popularity is greater
     * return true on replacing, and false otherwise.
     */
-    public boolean setBestPlaylist(PlaylistNode bestPlaylist) {
+    public boolean setBestPlaylist(Playlist bestPlaylist) {
         if (_bestPlaylist == null) {
             _bestPlaylist = bestPlaylist;
             return true;
@@ -66,13 +78,18 @@ public class Song implements Comparable {
             _bestPlaylist = bestPlaylist;
             return true;
         }
+
         return false;
     }
     
-    public PlaylistNode getBestPlaylist() {
+    public Playlist getBestPlaylist() {
         return _bestPlaylist;
     }
 
+
+    /**
+    * Let song be comparable by its popularity.
+    */
     @Override
     public int compareTo(Object other) {
         if (_popularity < ((Song)other).getPopularity()) {

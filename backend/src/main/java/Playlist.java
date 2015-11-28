@@ -2,18 +2,8 @@
 * Al Gore Rhythms 
 * Playlist Application Project
 *
-* This is the backend part. Including the web and data structure logic.
-*
-* Features:
-*   + Autocomplete song, and list top 4 songs based on popularity
-*   + List top 8 most popular playlists
-*   + Add up to 1024 playlists
-*   + Suggest most popular playlist with input song
-*   + Restful API
-*   + Hackable (separated front end, separated data structures)
-*   + Always returns JSON
-*   + Efficient
-*   + Nice frontend 
+* This file implements a playlist structure.
+* A playlist has a popularity, and song set.
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
@@ -21,33 +11,48 @@
 * @since: November 25, 2015
 ********************************************************************************/
 
+// TODO(eugenek): Change name to Playlist and songset to songlist?
 package algore;
 
 import java.util.Set;
 
-public class PlaylistNode implements Comparable {
+public class Playlist implements Comparable {
     public Integer _popularity;
     public Set<Song> _songSet;
 
-    public PlaylistNode(Integer popularity, Set<Song> songSet) {
+    public Playlist(Integer popularity, Set<Song> songSet) {
         _popularity = popularity;
         _songSet = songSet;
     }
+
 
     public Set<Song> getSongSet() {
         return _songSet;
     }
 
+    public void setSongSet(Set<Song> songSet) {
+        _songSet = songSet;
+    }
+
+
     public Integer getPopularity() {
         return _popularity;
     }
 
+    public void getPopularity(Integer popularity) {
+        _popularity = popularity;
+    }
+
+
+    /**
+    * Let Playlist be comparable by its popularity.
+    */
     @Override
     public int compareTo(Object other) {
-        if (_popularity < ((PlaylistNode)other).getPopularity()) {
+        if (_popularity < ((Playlist)other).getPopularity()) {
             return -1;
         }
-        if (_popularity > ((PlaylistNode)other).getPopularity()) {
+        if (_popularity > ((Playlist)other).getPopularity()) {
             return 1;
         }
         return 0;
