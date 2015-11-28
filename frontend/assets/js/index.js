@@ -10,15 +10,14 @@ $(function() {
         datatype: 'application/json',
         success: function(data) {
             // On success below jquery fills rows of Top8 table with data retrieved from /api/getTop8
-            for (var i = 1; i <= 8; i++) {
-                // If there is an undefined element in the data hash or if an element is
-                // equal to '}' assign N/A to represent the absense of a playlist 
-                if ((typeof data[i] === 'undefined') || (data[i] === '}')) {
-                    $('td.playlist-name:eq(' + (i - 1) + ')').text('N/A');
-                    $('td.playlist-popularity:eq(' + (i - 1) + ')').text('N/A');
+            var hash = JSON.parse(data);
+            for (var i = 0; i <= 7; i++) {
+                if (typeof hash[i] === 'undefined') {
+                    $('td.playlist-name:eq(' + i + ')').text('N/A');
+                    $('td.playlist-popularity:eq(' + i + ')').text('N/A');
                 } else {
-                    $('td.playlist-name:eq(' + (i - 1) + ')').text(data[i]['title']);
-                    $('td.playlist-popularity:eq(' + (i - 1) + ')').text(data[i]['popularity']);
+                    $('td.playlist-name:eq(' + i + ')').text(hash[i]['title'].replace(/##/g,', ').replace(/\\/g,''));
+                    $('td.playlist-popularity:eq(' + i + ')').text(hash[i]['popularity']);
                 }
             }
         },
@@ -39,7 +38,7 @@ $(function() {
 
     function suggestPlaylist() {
         var data = {};
-        data = $('#enter-song').val();
+        data['song'] = $('#enter-song').val(); // Gets the song name text
         $.ajax({
             type: 'POST',
             url: '/api/suggestPlaylist',
@@ -47,8 +46,9 @@ $(function() {
             dataType: "text",
             contentType: 'application/json',
             success: function(data) {
-                // On success below jquery fills rows of Top8 table with data retrieved from /api/getTop8
+                // On success, below jquery suggests playlist with highest popularity containing entered song
                 console.log('Success!');
+                console.log();
             },
             error: function(data) {
                 // alert('Failed to retrieve Top8 content');
