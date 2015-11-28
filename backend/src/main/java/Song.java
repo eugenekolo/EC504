@@ -13,8 +13,6 @@
 
 package algore;
 
-import java.util.Set;
-
 public class Song implements Comparable {
     public String _title;
     public String _author;

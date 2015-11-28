@@ -11,7 +11,7 @@
 * @since: November 25, 2015
 ********************************************************************************/
 
-// TODO(eugenek): Change name to Playlist and songset to songlist?
+// TODO(eugenek): Change songset to songlist?
 package algore;
 
 import java.util.Set;

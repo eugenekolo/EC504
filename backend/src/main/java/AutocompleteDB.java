@@ -13,7 +13,6 @@
 
 package algore;
 
-import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.ArrayList;
 
