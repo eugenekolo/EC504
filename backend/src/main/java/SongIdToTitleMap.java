@@ -15,17 +15,17 @@ package algore;
 import java.util.HashMap;
 
 public class SongIdToTitleMap {
-    public HashMap<Integer, String> _SongIdToTitleMap;
+    public HashMap<String, String> _SongIdToTitleMap;
 
     public SongIdToTitleMap() {
-        _SongIdToTitleMap = new HashMap<Integer, String>();
+        _SongIdToTitleMap = new HashMap<String, String>();
     }
 
-    public void putSong(Integer id, String songTitle) {
+    public void putSong(String id, String songTitle) {
         _SongIdToTitleMap.put(id, songTitle);
     }
 
-    public String getSong(Integer id) {
+    public String getSong(String id) {
         return _SongIdToTitleMap.get(id);
     }
 }

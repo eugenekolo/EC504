@@ -66,14 +66,18 @@ public class AlGore {
             while (songLine != null) {
                 /* Map song ids -> song titles */
                 String[] songLineProps = songLine.split("\t");
-                mSongIdToTitleMap.putSong(Integer.parseInt(songLineProps[0]), songLineProps[1]);
+                String songId = songLineProps[0];
+                String songTitle = songLineProps[1];
+                String songAuthor = songLineProps[2];
+
+                mSongIdToTitleMap.putSong(songId, songTitle);
 
                 /* Map song titles -> song objects */
-                Song song = new Song(songLineProps[1]);
-                mSongTitleToSongMap.putSong(songLineProps[1], song);
+                Song song = new Song(songTitle);
+                mSongTitleToSongMap.putSong(songTitle, song);
 
-                /* Add all song titles to the AutocompleteDB */
-                mAutocompleteDB.putSong(songLineProps[1]);
+                /* Add all song titles lower case to the AutocompleteDB */
+                mAutocompleteDB.putSong(songTitle);
 
                 songLine = reader.readLine();
             }
@@ -131,7 +135,7 @@ public class AlGore {
                 /* Map the input song ids to Song objects*/
                 Set<Song> songSet = new HashSet<Song>();
                 for (int i = 0; i < songIdList.length; i++) {
-                    String songTitle = mSongIdToTitleMap.getSong(Integer.parseInt(songIdList[i]));
+                    String songTitle = mSongIdToTitleMap.getSong(songIdList[i]);
                     Song song = mSongTitleToSongMap.getSong(songTitle);
                     songSet.add(song);
                 }
