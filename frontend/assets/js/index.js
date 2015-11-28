@@ -66,7 +66,7 @@ $(function() {
             $('option.song-autocomplete').text('');
         } else {
             var data = {};
-            data['song'] = $('#enter-song').val().toLowerCase(); // Gets the song name text
+            data['song'] = $('#enter-song').val(); // Gets the song name text
             console.log(data['song']);
             $.ajax({
                 type: 'POST',
@@ -112,14 +112,29 @@ $(function() {
      **************************************/
     // keypress jquery event handler
     $('#enter-song').bind("keyup", function(e) {
-        if (e.keyCode == 39) { // start post method after enter key pressed
-            // $('option.song-autocomplete:eq(' + 1 + ')').focus();
+        if (e.keyCode == 40) {
+            // If the down arrow is selected, jump to the autocomplete suggestions
+            $('#enter-song').blur();
+            $("select:first").focus();
             $('option.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
+            for (var i = 1; i <= 3; i++) {
+                $('option.song-autocomplete:eq(' + i + ')').prop('selected', false);
+            }
+            $('#suggested-playlist').prop('selected',false);
         } else {
+            // For each key pressed a playlist and 4 songs are suggested
             suggestPlaylist();
             autocomplete();
         }
     });
+    // $('option.song-autocomplete:eq(' + 0 + ')').bind("keyup", function(e) {
+    //     if (e.keyCode == 40) {
+    //         // If the down arrow is selected, jump to the autocomplete suggestions
+    //         $('#enter-song').focus();
+    //         $("select:first").blur();
+    //         $('option.song-autocomplete:eq(' + 0 + ')').blur('selected', true);
+    //     } 
+    // });
     // Clicking on an autocomplete suggestion changes the enter song text
     // to the autocomplete suggestion and updates the suggested playlist
     $('option.song-autocomplete').click(function() {
