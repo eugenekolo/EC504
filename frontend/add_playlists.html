@@ -82,6 +82,7 @@
               <div class="content-panel">
                 <table id="autocompleteTable" class="table table-hover autocomplete-table">
                   <h4>Autocomplete songs</h4>
+                  <hr>
                   <thead>
                     <tr>
                       <th>Title</th>
@@ -89,21 +90,21 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="song-row">
-                      <td class="song-ac-title"></td>
-                      <td class="song-ac-author"></td>
+                    <tr class="autocomplete-row">
+                      <td class="song-autocomplete"></td>
+                      <td class="author-autocomplete"></td>
                     </tr>
-                    <tr class="song-row">
-                      <td class="song-ac-title"></td>
-                      <td class="song-ac-author"></td>
+                    <tr class="autocomplete-row">
+                      <td class="song-autocomplete"></td>
+                      <td class="author-autocomplete"></td>
                     </tr>
-                    <tr class="song-row">
-                      <td class="song-ac-title"></td>
-                      <td class="song-ac-author"></td>
+                    <tr class="autocomplete-row">
+                      <td class="song-autocomplete"></td>
+                      <td class="author-autocomplete"></td>
                     </tr>
-                    <tr class="song-row">
-                      <td class="song-ac-title"></td>
-                      <td class="song-ac-author"></td>
+                    <tr class="autocomplete-row">
+                      <td class="song-autocomplete"></td>
+                      <td class="author-autocomplete"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -126,6 +127,7 @@
               <div class="content-panel">
                 <table id="songListTable" class="table table-hover">
                 <h4>Songs to add</h4>
+                <hr>
                 <thead>
                   <tr>
                     <th>Title</th>
@@ -187,90 +189,7 @@
   <script src="assets/js/jquery.tagsinput.js"></script>
   <script type="text/javascript" src="assets/js/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
 
-  <!-- TODO(eugenek): Move logic out of this file. -->
-  <script>
-
-    /*************************************
-    * Click handlers
-    **************************************/
-    /**
-    * This onClick submits a file to the backend
-    * @note: No validation of the files is done
-    * TODO(eugenek): Add validation.
-    */
-    $("#uploadFileBtn").click(function () {
-      var file = $('#chooseFileBtn').prop('files')[0]; // Only one file
-
-      // You got me so high, so high I cannot feel the fire. And you keep telling me that you'll be sweet.
-      // As long as I don't break these... promises...
-      var data = {}; // 
-      var promise = promiseFileContents(file, data);
-
-      $.when(promise).then(function (contents) {
-          $.ajax({
-              type: 'POST',
-              url: '/api/addPlaylists',
-              data: JSON.stringify(data),
-              dataType: "text",
-              contentType: 'application/json',
-              processData: false,
-              success: function (data) {
-                // TODO(eugenek): Add here.
-              },
-              error: function (data) {
-                // TODO(eugenek): Add here.
-              }
-          });
-      });    
-    });
-
-    $("#uploadStringBtn").click(function () {
-      var data = {};
-      data['uploadString'] = $('#playlistInput').val(); // This is a hack to let us use teh same route as uploadFile
-
-      $.ajax({
-          type: 'POST',
-          url: '/api/addPlaylist',
-          data: JSON.stringify(data),
-          dataType: "text",
-          contentType: 'application/json',
-          processData: false,
-          success: function (data) {
-            // TODO(eugenek): Add here.
-          },
-          error: function (data) {
-            // TODO(eugenek): Add here.
-          }
-       });  
-    });
-
-
-    $("#addListBtn").click(function () {
-      var songRow = songListTable.insertRow(-1); // Add to bottom
-      var songTitleCell = songRow.insertCell(0);
-      var songAuthorCell = songRow.insertCell(1);
-      songTitleCell.innerHTML = "";
-      songAuthorCell.innerHTML = "";
-    });
-
-    /*************************************
-    * Helper functions
-    **************************************/
-    function promiseFileContents(file, dst) {
-      var promise = $.Deferred(function(dfd) {
-          var reader = new FileReader();  
-          reader.onload = function(event) {  
-              var text = event.target.result;
-              dst[file.name] = text;
-              dfd.resolve(text);
-          };
-          reader.readAsText(file, "UTF-8");
-      }).promise();
-
-      return promise;
-    };
-
-  </script>
+  <script type="text/javascript" src="assets/js/add_playlists.js"></script>
 
 </body>
 </html>
