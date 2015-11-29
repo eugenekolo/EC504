@@ -11,6 +11,8 @@
 * @since: November 25, 2015
 ********************************************************************************/
 
+//TODO(eugenek): Combining this into Playlist would be a lot nicer.
+
 package algore;
 
 import java.util.ArrayList;

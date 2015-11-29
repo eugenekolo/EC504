@@ -110,7 +110,6 @@ public class AlGore {
         *   @res: 200 if successful
         ********************************************************************************/
         post("/api/addPlaylists", (req, res) -> {
-            // TODO(eugenek): How do you handle specifiying popularity when doing 1 entry?
             HashMap<String, String> json = jsonToMap(req.body());
             Integer attemptedAdd = 0;
             Integer actualAdd = 0;
@@ -262,7 +261,9 @@ public class AlGore {
             /* Server side logging */
             System.out.println("[getTop8] successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
-                System.out.println("[+]\t" + i + ". " + "BROKEN:TODO" + "\t" +
+                PlaylistPOJO playlistPojo = top8Map.get(i);
+
+                System.out.println("[+]\t" + i + ". " + playlistPojoToTitle(playlistPojo) + "\t" +
                                    top8Map.get(i).getPopularity());
             }
 
@@ -396,7 +397,7 @@ public class AlGore {
 
             /* Server side logging */
             System.out.println("[suggestPlaylist] looking for best playlist with: \"" + json.get("song") + "\"");
-            System.out.println("[+]\tfound: \"" + "TODO:FIXME" + "\"");
+            System.out.println("[+]\tfound: \"" + playlistPojoToTitle(playlistPojo) + "\"");
 
             return objToJson(playlistPojo);
         });
@@ -435,9 +436,10 @@ public class AlGore {
     }
 
     /**
-    * Converts a ArrayList<Song> to a string 
+    * Converts a Playlist to a string
     */
-    public static String songListToString(ArrayList<Song> songList) {
+    public static String playlistToTitle(Playlist playlist) {
+        ArrayList<Song> songList = playlist.getSongList();
         String playlistSongString = "";
         for (Song song : songList) {
             playlistSongString += song.getTitle() + "##";
@@ -446,10 +448,15 @@ public class AlGore {
     }
 
     /**
-    * Converts a Playlist to a string
+    * Converts a PlaylistPOJO to a string
     */
-    public static String playlistToTitle(Playlist playlist) {
-        return songListToString(playlist.getSongList());
+    public static String playlistPojoToTitle(PlaylistPOJO playlistPojo) {
+        ArrayList<HashMap<String,String>> songList = playlistPojo.getSongList();
+        String playlistSongString = "";
+        for (HashMap<String, String> song : songList) {
+            playlistSongString += song.get("title") + " " + song.get("author") + "##";
+        }
+        return playlistSongString;
     }
 
 }

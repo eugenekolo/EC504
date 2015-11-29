@@ -6,8 +6,9 @@ Eugene Kolo & Brandon Braxton
 # Installation
     
     brew install gradle
-    ./backend/build.sh
+    cd ./backend && ./build.sh && cd ..
 
+	
 # Running
 
     ./algore.sh
