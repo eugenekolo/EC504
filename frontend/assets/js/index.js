@@ -36,7 +36,9 @@ $(function() {
             $('#suggested-playlist').text('');
         } else {
             var data = {};
-            data['song'] = $('#enter-song').val(); // Gets the song name text
+            data['song'] = $('#enter-song').val().replace(/\\/g,'\\'); // Gets the song name text
+            // data['song'] = "As She's Walking Away (w\\/ Alan Jackson)"; // Gets the song name text
+            console.log(data['song']);
             $.ajax({
                 type: 'POST',
                 url: '/api/suggestPlaylist',
@@ -63,11 +65,11 @@ $(function() {
     function autocomplete() {
         if ($('#enter-song').val() === '') {
             console.log("LET ME KNOW");
-            $('option.song-autocomplete').text('');
+            $('.song-autocomplete').text('');
         } else {
             var data = {};
             data['song'] = $('#enter-song').val(); // Gets the song name text
-            console.log(data['song']);
+            // console.log(data['song']);
             $.ajax({
                 type: 'POST',
                 url: '/api/getAutocomplete',
@@ -83,17 +85,17 @@ $(function() {
                         if (typeof hash[i] === 'undefined') {
                             // An autocomplete option is empty if the hash did not return the 
                             // specified index
-                            $('option.song-autocomplete:eq(' + i + ')').text('');
+                            $('.song-autocomplete:eq(' + i + ')').text('');
                         } else {
                             // Otherwise fill the autocomplete option with the corresponding song name
-                            $('option.song-autocomplete:eq(' + i + ')').text(hash[i].replace(/\\/g, ''));
+                            $('.song-autocomplete:eq(' + i + ')').text(hash[i].replace(/\\/g, ''));
                         }
                     }
                 },
                 error: function(data) {
                     console.log('Failed to retrieve getAutocomplete content');
                     for (var i = 0; i <= 3; i++) {
-                        $('option.song-autocomplete:eq(' + i + ')').text('');
+                        $('.song-autocomplete:eq(' + i + ')').text('');
                     }
                 }
             });
@@ -116,9 +118,9 @@ $(function() {
             // If the down arrow is selected, jump to the autocomplete suggestions
             $('#enter-song').blur();
             $("select:first").focus();
-            $('option.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
+            $('.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
             for (var i = 1; i <= 3; i++) {
-                $('option.song-autocomplete:eq(' + i + ')').prop('selected', false);
+                $('.song-autocomplete:eq(' + i + ')').prop('selected', false);
             }
             $('#suggested-playlist').prop('selected',false);
         } else {
@@ -127,19 +129,19 @@ $(function() {
             autocomplete();
         }
     });
-    // $('option.song-autocomplete:eq(' + 0 + ')').bind("keyup", function(e) {
+    // $('.song-autocomplete:eq(' + 0 + ')').bind("keyup", function(e) {
     //     if (e.keyCode == 40) {
     //         // If the down arrow is selected, jump to the autocomplete suggestions
     //         $('#enter-song').focus();
     //         $("select:first").blur();
-    //         $('option.song-autocomplete:eq(' + 0 + ')').blur('selected', true);
+    //         $('.song-autocomplete:eq(' + 0 + ')').blur('selected', true);
     //     } 
     // });
     // Clicking on an autocomplete suggestion changes the enter song text
     // to the autocomplete suggestion and updates the suggested playlist
-    $('option.song-autocomplete').click(function() {
+    $('.song-autocomplete').click(function() {
         var enterSong = $('#enter-song');
-        enterSong.val($(this).val());
+        enterSong.val($(this).text());
         var e = $.Event('keyup');
         e.which = 13; // 13 = enter key
         enterSong.trigger(e); // Triggers keyup event listener for enter song text input
