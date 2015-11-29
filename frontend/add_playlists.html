@@ -143,7 +143,7 @@
       $.when(promise).then(function (contents) {
           $.ajax({
               type: 'POST',
-              url: '/api/addPlaylist',
+              url: '/api/addPlaylists',
               data: JSON.stringify(data),
               dataType: "text",
               contentType: 'application/json',

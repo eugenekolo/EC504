@@ -99,16 +99,16 @@ public class AlGore {
         * Route programming
         ****************************/
 
-        /** POST /api/addPlaylist *******************************************************
+        /** POST /api/addPlaylists *******************************************************
         *   Gets fileData and parses out the individual playlists and adds them to the database
         *
-        *   @note: Updating the playlistDB also updates SongTitleToSongMap   
+        *   @note: Updating the playlistDB also updates Song's popularities  
         *
         *   @req: JSON of <fileName> assosicated with <fileData>
         *       {<fileName>: <fileData>}
         *   @res: 200 if successful
         ********************************************************************************/
-        post("/api/addPlaylist", (req, res) -> {
+        post("/api/addPlaylists", (req, res) -> {
             // TODO(eugenek): How do you handle specifiying popularity when doing 1 entry?
             HashMap<String, String> json = jsonToMap(req.body());
             Integer attemptedAdd = 0;
@@ -139,9 +139,9 @@ public class AlGore {
                 /* Add the Playlist to the playListDB*/
                 Playlist playlist = new Playlist(popularity, songList);
                 playlistLine = reader.readLine();
+                boolean isActuallyAdded = mPlaylistDB.addPlaylist(playlist);
 
                 /* Server side logging */
-                boolean isActuallyAdded = mPlaylistDB.addPlaylist(playlist);
                 if (isActuallyAdded) {
                     actualAdd += 1;
                 }
@@ -149,11 +149,41 @@ public class AlGore {
             }
 
             /* Server side logging */
-            System.out.println("[addPlaylist] attempted: " + attemptedAdd + " actual: " + actualAdd + " playlists");
-            System.out.println("[addPlaylist] size of playlistDB: " + mPlaylistDB._playlistDB.size());
+            System.out.println("[addPlaylists] attempted: " + attemptedAdd + " actual: " + actualAdd + " playlists");
+            System.out.println("[addPlaylists] size of playlistDB: " + mPlaylistDB._playlistDB.size());
 
             res.status(200);
             return "Successfully added playlists";
+        });
+
+
+        /** POST /api/addPlaylist *******************************************************
+        *   Gets a list of song titles and popularity, and adds them as a playlist to the database
+        *
+        *   @note: Updating the playlistDB also updates Song's popularities  
+        *   @req: JSON of {{"songList":["Wolf", "Bird", "Cat"], "popularity":80}}
+        *   @res: 200 if successful
+        ********************************************************************************/
+        post("/api/addPlaylist", (req, res) -> {
+            String body = req.body();
+            PlaylistPOJO playlistPojo = new Gson().fromJson(body, PlaylistPOJO.class);
+
+            /* Map the input song titles to Song objects*/
+            ArrayList<Song> songList = new ArrayList<Song>();
+            for (String songTitle : playlistPojo.getSongList()) {
+                Song song = mSongTitleToSongMap.getSong(songTitle);
+                songList.add(song);
+            }
+
+            /* Add the Playlist to the playListDB*/
+            Playlist playlist = new Playlist(playlistPojo.getPopularity(), songList);
+            mPlaylistDB.addPlaylist(playlist);
+
+            /* Server side logging */
+            System.out.println("[addPlaylist] added 1 playlist");
+
+            res.status(200);
+            return "Successfully added playlist";
         });
 
 
@@ -299,7 +329,7 @@ public class AlGore {
         return gson.toJson(object);
     }
 
-    /** 
+   /** 
     * Converts a JSON string to a HashMap.
     */
     public static HashMap<String, String> jsonToMap(String json) {
@@ -307,7 +337,6 @@ public class AlGore {
             new TypeToken<HashMap<String, String>>(){}.getType());
         return map;
     }
-
     /**
     * Converts a ArrayList<Song> to a string 
     */

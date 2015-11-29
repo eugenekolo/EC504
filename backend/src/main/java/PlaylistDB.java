@@ -2,7 +2,7 @@
 * Al Gore Rhythms 
 * Playlist Application Project
 *
-*
+* This file implemenets the Playlist database.
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
@@ -25,7 +25,7 @@ public class PlaylistDB {
         _top8 = new ArrayList<Playlist>();
     }
 
-    /** addPlaylist
+    /**
     * @param: Playlist playlist    A playlist to add to the database 
     * @return: true if playlist was added, false otherwise.
     */
@@ -74,9 +74,9 @@ public class PlaylistDB {
             return true;
         }
 
-        Playlist worstTop8 = Collections.min(_top8);
-        if (playlist.getPopularity() > worstTop8.getPopularity()) {
-            _top8.remove(worstTop8);
+        Playlist worstPlaylist = Collections.min(_top8);
+        if (playlist.getPopularity() > worstPlaylist.getPopularity()) {
+            _top8.remove(worstPlaylist);
             _top8.add(playlist);
             return true;
         }
