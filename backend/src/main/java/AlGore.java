@@ -65,15 +65,16 @@ public class AlGore {
                 String songId = songLineProps[0];
                 String songTitle = songLineProps[1];
                 String songAuthor = songLineProps[2];
-                mSongIdToTitleMap.putSong(songId, songTitle);
+                String songTitleAuthor = songTitle + " by " + songAuthor;
+                mSongIdToTitleMap.putSong(songId, songTitleAuthor);
 
                 /* Map song titles -> song objects */
                 Song song = new Song(songTitle, songAuthor);
-                mSongTitleToSongMap.putSong(songTitle, song);
+                mSongTitleToSongMap.putSong(songTitleAuthor, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
                 /* Store a concated lowercase version and a case sensitive version */
-                mAutocompleteDB.putSong(songTitle.toLowerCase() + "##sep##" + songTitle);
+                mAutocompleteDB.putSong(songTitleAuthor.toLowerCase() + "##sep##" + songTitleAuthor);
 
                 songLine = reader.readLine();
             }
@@ -161,7 +162,7 @@ public class AlGore {
         *   Gets a list of song titles and popularity, and adds them as a playlist to the database
         *
         *   @note: Updating the playlistDB also updates Song's popularities  
-        *   @req: JSON of {{"songList":["Wolf", "Bird", "Cat"], "popularity":80}}
+        *   @req: JSON of {{"songList":["Wolf by John", "Bird by Janice", "Cat by Jill"], "popularity":80}}
         *   @res: 200 if successful
         ********************************************************************************/
         post("/api/addPlaylist", (req, res) -> {
@@ -192,10 +193,31 @@ public class AlGore {
         *
         *   @req: blank
         *   @res: JSON map of top 8 playlists song list sepated by ##
-        *       {"1":{"title":"Apple##Orange##Watermelon", "popularity": "92"},
-        *        "2":{"title":"Ferrari##Lamboughini##BMW", "popularity": "78"},
-        *         ...
+        *       {"0":{"songList":[{
+        *                           "title":"Apple",
+        *                           "author":"Joe",
+        *                          },
+        *                          {
+        *                           "title":"Orange",
+        *                           "author": "Snoop",
+        *                          }
+        *                        ],
+        *               "popularity": "78"
+        *             },
+        *       {"1":{"songList":[{
+        *                           "title":"Cat",
+        *                           "author":"Janice",
+        *                          },
+        *                          {
+        *                           "title":"Dog",
+        *                           "author": "Jim",
+        *                          }
+        *                        ],
+        *               "popularity": "64"
+        *             },
+        *        ...
         *       }
+        *
         ********************************************************************************/
         get("/api/getTop8", (req, res) -> {
             ArrayList<Playlist> top8List = mPlaylistDB.getTop8();
@@ -230,8 +252,19 @@ public class AlGore {
         *
         *   @req: JSON of "song" matched to partial completion
         *       {"song": "obses"}
-        *   @res: JSON with top 5 most popular autocompleted songs
-        *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
+        *   @res: JSON with top 4 most popular autocompleted songs
+        *       {"0": {
+        *               "title": "Obsesion",
+        *               "author": "Dre"
+        *              },
+        *         "1":
+        *              {
+        *               "title":"Obsesionado",
+        *               "author": "Lopez"
+        *              }
+        *          ....
+        *        }
+        *
         *********************************************************************************/
         post("/api/getAutocomplete", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    
@@ -265,9 +298,13 @@ public class AlGore {
             Collections.sort(songList, Collections.reverseOrder());
 
             /* Converted the sorted song list to a song title map indexed by rank */
-            HashMap<Integer, String> songTitlesMap = new HashMap<Integer, String>();
+            HashMap<Integer, HashMap<String, String>> songTitlesMap = new HashMap<Integer, HashMap<String, String>>();
             for (int i = 0; i < songList.size(); i++) {
-                songTitlesMap.put(i, songList.get(i).getTitle());
+                HashMap<String, String> songData = new HashMap<String,String>();
+                songData.put("title", songList.get(i).getTitle());
+                songData.put("author", songList.get(i).getAuthor());
+                songData.put("popularity", String.valueOf(songList.get(i).getPopularity()));
+                songTitlesMap.put(i, songData);
             }
 
             /* Server side logging */
@@ -285,10 +322,10 @@ public class AlGore {
         *   Gets a song title and suggests the most popular playlist that has it
         *
         *   @req: JSON of "song" matches to <songTitle>
-        *       {"song": "Obsesionado"}
+        *       {"song": "Obsesionado by Janice"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver
-        *            ##El Celoso##El Columpio##La Gran Senora##"}
+        *       {"mostPopular":"Obsesionado by Janice##Me Gusta Todo De Ti by John##La Promocion by Jill
+                  ##No Puedo Volver by Jack##El Celoso by Jackie##El Columpio by Justin##La Gran Senora by Jay##"}
         ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    

@@ -44,6 +44,24 @@ public class Song implements Comparable {
     }
 
 
+    public String getTitle() {
+        return _title;
+    }
+
+    public void setTitle(String title) {
+        _title = title;
+    }
+
+
+    public String getAuthor() {
+        return _author;
+    }
+
+    public void setAuthor(String author) {
+        _author = author;
+    }
+
+
     public void setPopularity(Integer popularity) {
         _popularity = popularity;
     }
@@ -53,13 +71,6 @@ public class Song implements Comparable {
     }
 
 
-    public String getTitle() {
-        return _title;
-    }
-
-    public void setTitle(String title) {
-        _title = title;
-    }
 
 
     /**
