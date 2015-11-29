@@ -1,50 +1,64 @@
 $(function() {
+
+    /*************************************
+    * On page load
+    *************************************/
+
     /*************** 
         getTop8 
     ***************/
-    // On page load: Ajax GET request to '/api/getTop8'
+    /* On page load GET /api/getTop8 */
+    /* Update the Top 8 Table with the results */
     $.ajax({
         type: 'GET',
         url: '/api/getTop8',
         data: 'json',
         datatype: 'application/json',
         success: function(data) {
-            // On success below jquery fills rows of Top8 table with data retrieved from /api/getTop8
             var hash = JSON.parse(data);
-            // for (var i = 0; i <= 7; i++) {
-            //     for (var key in hash[i]['songList']) {
-            //         console.log(key);
-            //     }
-            // }
+
             for (var i = 0; i <= 7; i++) {
+                // TODO(eugenek): Make this dynamic growth instead?
                 if (typeof hash[i] === 'undefined') {
                     $('td.playlist-name:eq(' + i + ')').text('N/A');
                     $('td.playlist-popularity:eq(' + i + ')').text('N/A');
                 } else {
-                    for (var j in hash[i]['songList']) {
-                        var currentPlaylistText = $('td.playlist-name:eq(' + i + ')').text();
-                        currentPlaylistText += hash[i]['songList'][j]['title'] + ' by ' + hash[i]['songList'][j]['author'] + ', ';
-                        $('td.playlist-name:eq(' + i + ')').text(formatPlaylist(currentPlaylistText));
-                        $('td.playlist-popularity:eq(' + i + ')').text(hash[i]['popularity']);
+                    var popularity = hash[i]['popularity'];
+                    var songList = hash[i]['songList'];
+
+                    /* Generate the playlist html to insert into the table */
+                    var playlistHtml = "";
+                    for (var j in songList) {
+                        var title = songList[j]['title'];
+                        var author = songList[j]['author'];
+                        playlistHtml += "<b>"+ title + "</b>" + " by " + author + ", " 
                     }
-                    // Remove trailing comma
-                    $('td.playlist-name:eq(' + i + ')').text($('td.playlist-name:eq(' + i + ')').text().slice(0, -2));
+                    playlistHtml.slice(0, -2); // Remove trailing comma
+
+                    /* Update the table */
+                    $('td.playlist-name:eq(' + i + ')').html(playlistHtml);
+                    $('td.playlist-popularity:eq(' + i + ')').html(popularity);
                 }
             }
         },
         error: function(data) {
-            // alert('Failed to retrieve Top8 content');
             console.log('Failed to retrieve Top8 content');
         }
     });
-    /******************** 
+
+
+    /*************************************
+    * Logic Functions
+    *************************************/
+
+    /*********************
         suggestPlaylist
     *********************/
     function suggestPlaylist() {
         var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
         var title = parseTitle[0];
         if (title === '') {
-            console.log("LET ME KNOW");
+
             $('.author-suggest').text('');
             removeTableRows();
             var author = $('#enter-song').val().split('#').pop();
@@ -53,6 +67,7 @@ $(function() {
             } else {
                 $('.song-suggest').text('');
             }
+            
         } else {
             var data = {};
             var author = $('#enter-song').val().split('#').pop();
@@ -61,8 +76,7 @@ $(function() {
                 'title': title,
                 'author': author
             };
-            // data['song'] = "As She's Walking Away (w\\/ Alan Jackson)"; // Gets the song name text
-            console.log(data['song']);
+
             $.ajax({
                 type: 'POST',
                 url: '/api/suggestPlaylist',
@@ -93,54 +107,49 @@ $(function() {
             });
         }
     }
+
     /******************** 
         getAutocomplete
     *********************/
+    /* Send a prefix and get autocomplete entries */
+    /* Update the autocomplete table with the results */
     function autocomplete() {
         var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
-        var title = parseTitle[0];
-        if (title === '') {
-            console.log("LET ME KNOW");
-            $('.song-autocomplete').text('');
-            $('.author-autocomplete').text('');
-        } else {
-            var data = {};
-            data['song'] = title; // Gets the song name text
-            // console.log(data['song']);
-            $.ajax({
-                type: 'POST',
-                url: '/api/getAutocomplete',
-                data: JSON.stringify(data),
-                dataType: "text",
-                contentType: 'application/json',
-                success: function(data) {
-                    // On success, below jquery suggests playlist with highest popularity containing entered song
-                    console.log('Success!');
-                    var hash = JSON.parse(data);
-                    console.log(hash); // Helps to know if the proper songs are being returned
-                    for (var i = 0; i <= 3; i++) {
-                        if (typeof hash[i] === 'undefined') {
-                            // An autocomplete option is empty if the hash did not return the 
-                            // specified index
-                            $('.song-autocomplete:eq(' + i + ')').text('');
-                            $('.author-autocomplete:eq(' + i + ')').text('');
-                        } else {
-                            // Otherwise fill the autocomplete option with the corresponding song name
-                            $('.song-autocomplete:eq(' + i + ')').text(hash[i]['title'].replace(/\\/g, ''));
-                            $('.author-autocomplete:eq(' + i + ')').text(hash[i]['author'].replace(/\\/g, ''));
-                        }
-                    }
-                },
-                error: function(data) {
-                    console.log('Failed to retrieve getAutocomplete content');
-                    for (var i = 0; i <= 3; i++) {
-                        $('.song-autocomplete:eq(' + i + ')').text('');
-                        $('.author-autocomplete:eq(' + i + ')').text('');
-                    }
+        var prefix = parseTitle[0];
+
+        /* Send a prefix and get autocomplete entries */
+        var data = {};
+        data['song'] = prefix;
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/getAutocomplete',
+            data: JSON.stringify(data),
+            dataType: "text",
+            contentType: 'application/json',
+            success: function(data) {
+                var hash = JSON.parse(data);
+
+                /* Clear the table */
+                for (var i = 0; i < 4; i++) {
+                    $('.song-autocomplete').text('');
+                    $('.author-autocomplete').text('');
                 }
-            });
-        }
+
+                /* Update the table */
+                for (var i = 0; i < Object.keys(hash).length; i++) {
+                    var title = hash[i]['title'];
+                    var author = hash[i]['author'];
+                    $('.song-autocomplete:eq(' + i + ')').text(title.replace(/\\/g, ''));
+                    $('.author-autocomplete:eq(' + i + ')').text(author.replace(/\\/g, ''));
+                }
+            },
+            error: function(data) {
+                console.log('Failed to retrieve getAutocomplete content');
+            }
+        });
     }
+
     /*************************************
      * Helper functions
      **************************************/
@@ -173,7 +182,7 @@ $(function() {
     /*************************************
      * Event Listeners
      **************************************/
-    // keypress jquery event handler
+
     $('#enter-song').bind("keyup", function(e) {
         if (e.keyCode == 40) {
             // If the down arrow is selected, jump to the autocomplete suggestions
@@ -190,14 +199,7 @@ $(function() {
             autocomplete();
         }
     });
-    // $('.song-autocomplete:eq(' + 0 + ')').bind("keyup", function(e) {
-    //     if (e.keyCode == 40) {
-    //         // If the down arrow is selected, jump to the autocomplete suggestions
-    //         $('#enter-song').focus();
-    //         $("select:first").blur();
-    //         $('.song-autocomplete:eq(' + 0 + ')').blur('selected', true);
-    //     } 
-    // });
+
     // Clicking on an autocomplete suggestion changes the enter song text
     // to the autocomplete suggestion and updates the suggested playlist
     $('.autocomplete-row').click(function() {
