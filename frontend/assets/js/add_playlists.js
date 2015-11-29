@@ -49,7 +49,7 @@ $("#uploadListBtn").click(function () {
         // TODO(eugenek): Add here.
       }
   });
-}
+});
 
 /* Adds the specified song to the song list table */
 $("#addListBtn").click(function () {
