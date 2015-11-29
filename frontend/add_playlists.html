@@ -69,88 +69,97 @@
       <section id="main-content">
           <section class="wrapper">
             <h3><i class="fa fa-angle-right"></i> Add Playlists</h3>
-            
-            <div class="row mt">
+
+
               <!-- Left side autocomplete -->
               <div class="col-xs-6 mt">
+                <div class="input-group">
+                  <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . ." >
+                </div>  
+                </br>
                 <div class="content-panel">
-                    <table id="autocompleteTable" class="table table-hover">
-                      <div class="input-group">
-                        <input type="text" id="enter-song" class="form-control" placeholder="Enter Song . . ." aria-describedby="basic-addon1">
-                      </div>
-                      <hr>
-                      <tbody>
-                          <tr class="song-row">
-                              <td>1</td
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>2</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>3</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>4</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                      </tbody>
-                    </table>
+                  <table id="autocompleteTable" class="table table-hover autocomplete-table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="song-row">
+                            <td>1</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>2</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>3</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>4</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                    </tbody>
+                  </table>
                 </div>
+
+
+                <button id="addListBtn" type="button" class="btn btn-primary btn-lg btn-block">Add to list</button>    
+                <div class="input-group">
+                 <span class="input-group-btn">
+                    <button id="uploadListBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload list</button>
+                  </span>
+                  <input type="text" class="input-lg" id="uploadPopularity", placeholder="Popularity..." />
+                </div>
+                </br>
+                <div class="btn-group">
+                  <input id="chooseFileBtn" type="file" class="btn btn-theme input-lg"/>
+                  <button id="uploadFileBtn" type="button" class="btn btn-theme btn-lg">Upload file</button>
+                </div>
+
               </div>
 
               <!-- Right side song list -->
               <div class="col-xs-6 mt">
                 <div class="content-panel">
-                    <table id="songListTable" class="table table-hover">
-                      <div class="input-group">
-                        <input type="text" id="enter-song" class="form-control" placeholder="Enter Song . . ." aria-describedby="basic-addon1">
-                      </div>
-                      <hr>
-                      <tbody>
-                          <tr class="song-row">
-                              <td>1</td
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>2</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>3</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                          <tr class="song-row">
-                              <td>4</td>
-                              <td class="song-title"></td>
-                              <td class="song-author"></td>
-                          </tr>
-                      </tbody>
-                    </table>
+                  <table id="songListTable" class="table table-hover">
+                    <hr>
+                    <tbody>
+                        <tr class="song-row">
+                            <td>1</td
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>2</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>3</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                        <tr class="song-row">
+                            <td>4</td>
+                            <td class="song-title"></td>
+                            <td class="song-author"></td>
+                        </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
             </div>  <!-- END Autocomplete and Song list tables -->
 
-            <div class="row mt">
-              <div class="col-xs-6">
-                  <button id="addListBtn" type="button" class="btn btn-primary btn-lg btn-block">Add to list</button>
-                  <button id="addFileBtn" type="button" class="btn btn-theme btn-lg btn-block">Add file to list</button>
-                  <div class="form-inline">
-                    <button id="uploadBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload playlist</button>
-                    <input type="text" id="uploadPopularity", placeholder="Popularity..." />
-                  </div>
-              </div>
-            </div> <!-- END buttons below autocomplete -->
+
 
           </section>
       </section>
@@ -196,7 +205,7 @@
       $.when(promise).then(function (contents) {
           $.ajax({
               type: 'POST',
-              url: '/api/addPlaylist',
+              url: '/api/addPlaylists',
               data: JSON.stringify(data),
               dataType: "text",
               contentType: 'application/json',
