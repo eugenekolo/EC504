@@ -3,8 +3,8 @@
 1. Add/delete new playlist(s) to database
 2. Autocomplete to top 4 songs
 	1. Get song popularity based on playlist popularity
-	2. Suggest playlist
-3. List top 8 PLs
+	2. Suggest playlist based on playlists that contain specific song
+3. List top 8 playlists
 
 
 Bulk of the work is done when you add/delete a playlist.  
@@ -13,30 +13,40 @@ Special thought is put into keeping (2) highly responsive, as users are probably
 Memory is considered lastly, as applications these days take up 200MB+ and nobody bats an eye. A playlist app can easily use 10MB and be fine.
 
 ## Definitions and data structures used
-1. `L` = number of playlists at start  
+1. **Playlist database**  
+`L` = number of playlists at start  
 `N` = number of playlists currently in the DB  
-**Playlist database**, `PlaylistDB` is a Double-ended Priority Queue (DEPQ), implemented as a binary min-max heap. The starting database will be built in `O(L)` time (`L` inserts at `O(1)` time each). The key in the DEPQ is playlist popularity.
+`PlaylistDB` is a Priority Queue, implemented as a binary min heap. The starting database will be built in `O(L)` time (`L` inserts at `O(1)` time each). The key in the PriorityQueue is playlist popularity.
 
 	Functions:   
-	`Insert - O(1)`  
+	`Insert - O(logN)`  
 	`Find-Min - O(1)`  
-	`Find-Max - O(1)`    
 	`Delete-Min - O(logN)`  
-	`Delete-Max - O(logN)`  
-	`Top-K - O(KlogN) // Really just Find-Max+Delete-Max K times`  
 	`Create - O(L)`
 
-2. `K` = number of total songs  
+2. **Top 8 cache**  
+The top 8 cache, `Top8` is implemented as an 8 element linked list. Updated when `PlaylistDB` is updated. Due to the small size, all operations are constant.
+
+    Functions:  
+    `Add - O(1)`  
+    `Remove - O(1)`  
+    `Peek - O(1)`
+    
+3. **Autocomplete database**  
+`K` = number of total songs  
 `M` = length of longest song  
-The **autocomplete database**, `AutocompleteDB` will be a radix tree/ternary search tree. The starting database will be built in `O(KM)`. Total memory requirement is on the order of `O(KM)`. 
+The **autocomplete database**, `AutocompleteDB` is a PatriciaTrie (a space-optimized Trie). The starting database will be built in `O(KM)`. Total memory requirement is on the order of `O(KM)`. 
 	
 	Functions:  
-	`Find-Word - O(M)`  
-	`Find-Sub-Words - O(M*O(DFS))`  
+	`Find-Prefix-Map - O(M)`  
 	`Create - O(KM)`
-
-3. `K` = number of total songs  
-The **song popularity database**, `SongPopMap` will be a map, implemented as a hashmap. Memory requirement will be on the order of `O(K)`, and it will take `Add-Song` ran `K` times for a runtime of `O(K)` to create the database. 
+	
+	Algorithms:  
+	`Get-Top-4 - O(M), essentially a K-selection algorithm`
+	
+4. **Song database**  
+The **song database**, is a series of Maps that point to songs in the `PlaylistDB`. The song database is indexed by a song's title and author, 
+and points to a **song object** in the `PlaylistDB`. 
 
 	Functions:  
 	`Add-Song - O(1)`  
