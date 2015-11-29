@@ -6,7 +6,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.8
+* @version: 0.9
 * @since: November 25, 2015
 
 * Features:
@@ -70,7 +70,6 @@ public class AlGore {
 
                 /* Map song titles -> song objects */
                 Song song = new Song(songTitle, songAuthor);
-                System.out.println("Added " + songTitleAuthor);
                 mSongTitleToSongMap.putSong(songTitleAuthor, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
@@ -181,12 +180,11 @@ public class AlGore {
             PlaylistPOJO playlistPojo = new Gson().fromJson(body, PlaylistPOJO.class);
 
             /* Map the input song titles to Song objects*/
-            System.out.println("Got ourselves a pojo " + playlistPojo.getPopularity());
             ArrayList<Song> songList = new ArrayList<Song>();
             for (HashMap<String,String> songData : playlistPojo.getSongList()) {
                 String songTitle = songData.get("title");
                 String songAuthor = songData.get("author");
-                System.out.println("Looking up to add " + songTitle + "##" + songAuthor);
+
                 Song song = mSongTitleToSongMap.getSong(songTitle+"##"+songAuthor);
                 songList.add(song);
             }
@@ -303,7 +301,6 @@ public class AlGore {
             for (String concatTitle : concatTitles) {
                 String[] bothTitles = concatTitle.split("##sep##");
                 songTitles.add(bothTitles[1]); // The case sensitive title
-                System.out.println(bothTitles[1]);
             }
 
             /* Change the ArrayList of song titles to a sorted song list of max size 4*/
@@ -392,7 +389,6 @@ public class AlGore {
                 songData.put("title", x.getTitle());
                 songData.put("author", x.getAuthor());
                 songData.put("popularity", String.valueOf(x.getPopularity()));
-                System.out.println("playlist has " + x.getTitle());
                 songList.add(songData);
             }
             PlaylistPOJO playlistPojo = new PlaylistPOJO(bestPlaylist.getPopularity(), songList);
