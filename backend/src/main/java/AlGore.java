@@ -65,11 +65,12 @@ public class AlGore {
                 String songId = songLineProps[0];
                 String songTitle = songLineProps[1];
                 String songAuthor = songLineProps[2];
-                String songTitleAuthor = songTitle + " by " + songAuthor;
+                String songTitleAuthor = songTitle + "##" + songAuthor;
                 mSongIdToTitleMap.putSong(songId, songTitleAuthor);
 
                 /* Map song titles -> song objects */
                 Song song = new Song(songTitle, songAuthor);
+                System.out.println("Added " + songTitleAuthor);
                 mSongTitleToSongMap.putSong(songTitleAuthor, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
@@ -162,7 +163,17 @@ public class AlGore {
         *   Gets a list of song titles and popularity, and adds them as a playlist to the database
         *
         *   @note: Updating the playlistDB also updates Song's popularities  
-        *   @req: JSON of {{"songList":["Wolf by John", "Bird by Janice", "Cat by Jill"], "popularity":80}}
+        *   @req: JSON of {"songList":[{
+        *                                  "title":"Obsession Confession",
+        *                                  "author":"Slash"
+        *                                },
+        *                                {
+        *                                  "title":"Obsesion",
+        *                                  "author":"Roberto Pulido"
+        *                                }
+        *                              ],
+        *                  "popularity":"80"
+        *                  }
         *   @res: 200 if successful
         ********************************************************************************/
         post("/api/addPlaylist", (req, res) -> {
@@ -170,9 +181,13 @@ public class AlGore {
             PlaylistPOJO playlistPojo = new Gson().fromJson(body, PlaylistPOJO.class);
 
             /* Map the input song titles to Song objects*/
+            System.out.println("Got ourselves a pojo " + playlistPojo.getPopularity());
             ArrayList<Song> songList = new ArrayList<Song>();
-            for (String songTitle : playlistPojo.getSongList()) {
-                Song song = mSongTitleToSongMap.getSong(songTitle);
+            for (HashMap<String,String> songData : playlistPojo.getSongList()) {
+                String songTitle = songData.get("title");
+                String songAuthor = songData.get("author");
+                System.out.println("Looking up to add " + songTitle + "##" + songAuthor);
+                Song song = mSongTitleToSongMap.getSong(songTitle+"##"+songAuthor);
                 songList.add(song);
             }
 
@@ -196,10 +211,12 @@ public class AlGore {
         *       {"0":{"songList":[{
         *                           "title":"Apple",
         *                           "author":"Joe",
+        *                           "popularity":"80"
         *                          },
         *                          {
         *                           "title":"Orange",
-        *                           "author": "Snoop",
+        *                           "author":"Snoop",
+        *                           "popularity":"25" 
         *                          }
         *                        ],
         *               "popularity": "78"
@@ -207,10 +224,12 @@ public class AlGore {
         *       {"1":{"songList":[{
         *                           "title":"Cat",
         *                           "author":"Janice",
+        *                           "popularity":"85"
         *                          },
         *                          {
         *                           "title":"Dog",
         *                           "author": "Jim",
+        *                           "popularity":"35"
         *                          }
         *                        ],
         *               "popularity": "64"
@@ -223,22 +242,30 @@ public class AlGore {
             ArrayList<Playlist> top8List = mPlaylistDB.getTop8();
 
             /* Convert the top8 list to a JSON map */
-            HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
+            HashMap<Integer, PlaylistPOJO> top8Map = new HashMap<Integer, PlaylistPOJO>();
             for (int i = 0; i < top8List.size(); i++) {
                 Playlist playlist = top8List.get(i);
 
-                HashMap<String, String> playlistData = new HashMap<String,String>();
-                playlistData.put("title", playlistToTitle(playlist));
-                playlistData.put("popularity", String.valueOf(playlist.getPopularity()));
+                ArrayList<HashMap<String,String>> songList = new ArrayList<HashMap<String,String>>();
+                for (Song song : playlist.getSongList()) {
+                    HashMap<String,String> songData = new HashMap<String,String>();
+                    songData.put("title", song.getTitle());
+                    songData.put("author", song.getAuthor());
+                    songData.put("popularity", String.valueOf(song.getPopularity()));
 
-                top8Map.put(i, playlistData);
+                    songList.add(songData);
+                }
+
+                PlaylistPOJO playlistPojo = new PlaylistPOJO(playlist.getPopularity(), songList);
+                top8Map.put(i, playlistPojo);
+
             }
 
             /* Server side logging */
             System.out.println("[getTop8] successful returning: ");
             for (int i = 0; i < top8List.size(); i++) {
-                System.out.println("[+]\t" + i + ". " + top8Map.get(i).get("title") + "\t" +
-                                   top8Map.get(i).get("popularity"));
+                System.out.println("[+]\t" + i + ". " + "BROKEN:TODO" + "\t" +
+                                   top8Map.get(i).getPopularity());
             }
 
             return mapToJson(top8Map);
@@ -255,12 +282,12 @@ public class AlGore {
         *   @res: JSON with top 4 most popular autocompleted songs
         *       {"0": {
         *               "title": "Obsesion",
-        *               "author": "Dre"
+        *               "author": "Roberto Pulido"
         *              },
         *         "1":
         *              {
-        *               "title":"Obsesionado",
-        *               "author": "Lopez"
+        *               "title":"Obsession Confession",
+        *               "author": "Slash"
         *              }
         *          ....
         *        }
@@ -276,6 +303,7 @@ public class AlGore {
             for (String concatTitle : concatTitles) {
                 String[] bothTitles = concatTitle.split("##sep##");
                 songTitles.add(bothTitles[1]); // The case sensitive title
+                System.out.println(bothTitles[1]);
             }
 
             /* Change the ArrayList of song titles to a sorted song list of max size 4*/
@@ -297,7 +325,7 @@ public class AlGore {
             }
             Collections.sort(songList, Collections.reverseOrder());
 
-            /* Converted the sorted song list to a song title map indexed by rank */
+            /* Converted the sorted song list to a song map indexed by rank */
             HashMap<Integer, HashMap<String, String>> songTitlesMap = new HashMap<Integer, HashMap<String, String>>();
             for (int i = 0; i < songList.size(); i++) {
                 HashMap<String, String> songData = new HashMap<String,String>();

@@ -14,16 +14,23 @@
 package algore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlaylistPOJO {
     public Integer popularity;
-    public ArrayList<String> songList;
+    public ArrayList<HashMap<String,String>> songList;
+
+
+    public PlaylistPOJO(Integer popularity_, ArrayList<HashMap<String,String>> songList_) {
+    	popularity = popularity_;
+    	songList = songList_;
+    }
 
     public Integer getPopularity() {
     	return popularity;
     }
 
-    public ArrayList<String> getSongList () {
+    public ArrayList<HashMap<String,String>> getSongList() {
     	return songList;
     }
 }
