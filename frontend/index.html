@@ -68,133 +68,125 @@
         <!-- ****************************************************************************************************
       MAIN CONTENT
       ***************************************************************************************************** -->
-        <!--main content start-->
         <section id="main-content">
             <section class="wrapper">
-                <h3><i class="fa fa-angle-right"></i> Dashboard </h3>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <!-- /Input field -->
-                        <div class="input-group">
-                            <input type="text" id="enter-song" class="form-control" placeholder="Enter Song . . ." aria-describedby="basic-addon1">
-                        </div>
-                        <!-- <div class="form-group">
-                            <label for="comment">Results:</label>
-                            <textarea class="form-control" rows="5" id="comment"></textarea>
-                        </div> -->
-                        <br>
-                        <!-- <select overflow="hidden" multiple size="5" class="form-control"> -->
-                        <!-- <div class="table-alignment"> -->
-                        <!-- <option id="suggested-playlist" class="multiple-select">0 (Suggested Playlist)</option> -->
-                        <!-- <option class="multiple-select song-autocomplete">1 (Most Popular autocomplete)</option> -->
-                        <!-- <option class="multiple-select song-autocomplete">2 (Second Most Popular autocomplete)</option> -->
-                        <!-- <option class="multiple-select song-autocomplete">3 (Third Most Popular autocomplete)</option> -->
-                        <!-- <option class="multiple-select song-autocomplete">4 (Least Most Popular autocomplete)</option> -->
-                        <!-- </div> -->
-                        <!-- </select> -->
-                        <div class="content-panel">
-                            <table class="table table-hover autocomplete-table">
-                                <thead>
-                                    <tr>
-                                        <th>Autocomplete Name</th>
-                                        <th>Artist</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="playlist-row">
-                                        <td id="suggested-playlist">(Suggested Playlist)</td>
-                                        <td class="">Playlist</td>
-                                    </tr>
-                                    <tr class="playlist-row">
-                                        <td class="song-autocomplete">(Most Popular autocomplete)</td>
-                                        <td class=""></td>
-                                    </tr>
-                                    <tr class="playlist-row">
-                                        <td class="song-autocomplete">(Second Most Popular autocomplete)</td>
-                                        <td class=""></td>
-                                    </tr>
-                                    <tr class="playlist-row">
-                                        <td class="song-autocomplete">(Third Most Popular autocomplete)</td>
-                                        <td class=""></td>
-                                    </tr>
-                                    <tr class="playlist-row">
-                                        <td class="song-autocomplete">(Least Most Popular autocomplete)</td>
-                                        <td class=""></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--/content-panel -->
+                <h3><i class="fa fa-angle-right"></i> Suggest Playlists </h3>
+                <!-- Left side autocomplete -->
+                <div class="col-xs-6 mt">
+                    <div class="input-group">
+                        <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . .">
                     </div>
-                    <!-- /row -->
-                    <div class="">
-                        <div class="col-xs-6 mt">
-                            <div class="content-panel">
-                                <table class="table table-hover">
-                                    <h4><i class="fa fa-angle-right"></i> TOP 8</h4>
-                                    <hr>
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Playlist Name</th>
-                                            <th>Popularity (0-99)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="playlist-row">
-                                            <td>1</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>2</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>3</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>4</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>5</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>6</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>7</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                        <tr class="playlist-row">
-                                            <td>8</td>
-                                            <td class="playlist-name"></td>
-                                            <td class="playlist-popularity"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--/content-panel -->
-                        </div>
-                        <!-- /col-md-12 -->
+                    </br>
+                    <div class="content-panel">
+                        <table class="table table-hover autocomplete-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Artist</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="playlist-row">
+                                    <td class="song-autocomplete">(Most Popular autocomplete)</td>
+                                    <td class="author-autocomplete"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td class="song-autocomplete">(Second Most Popular autocomplete)</td>
+                                    <td class="author-autocomplete"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td class="song-autocomplete">(Third Most Popular autocomplete)</td>
+                                    <td class="author-autocomplete"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td class="song-autocomplete">(Least Most Popular autocomplete)</td>
+                                    <td class="author-autocomplete"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="content-panel">
+                        <table class="table table-hover">
+                            <h4><i class="fa fa-angle-right"></i> TOP 8</h4>
+                            <hr>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Playlist Name</th>
+                                    <th>Popularity (0-99)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="playlist-row">
+                                    <td>1</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>2</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>3</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>4</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>5</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>6</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>7</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                                <tr class="playlist-row">
+                                    <td>8</td>
+                                    <td class="playlist-name"></td>
+                                    <td class="playlist-popularity"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--/content-panel -->
+                </div>
+                <!-- Right side song list -->
+                <div class="col-xs-6 mt">
+                    <div class="content-panel">
+                        <table class="table table-hover autocomplete-table">
+                            <h4><i class="fa fa-angle-right"></i> Suggested Playlist</h4>
+                            <hr>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Artist</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="playlist-row">
+                                    <td id="suggested-playlist">(Suggested Playlist)</td>
+                                    <td class="">Playlist</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- row -->
+                <!-- END Autocomplete and Song list tables -->
             </section>
-            <!--/wrapper -->
         </section>
-        <!-- /MAIN CONTENT -->
-        <!--main content end-->
     </section>
     <!-- js placed at the end of the document so the pages load faster -->
     <script src="assets/js/jquery.js"></script>
