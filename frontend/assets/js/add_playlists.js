@@ -90,12 +90,15 @@ $('#enter-song').bind("keyup", function(e) {
 
 
 /* */
-//$('.autocomplete-row').click(function() {
-//    var title = $(this).children('.song-autocomplete').text();
-//    var author = $(this).children('.author-autocomplete').text();
-//
-//    addSongToList(title, author);
-//});
+$('.autocomplete-row').click(function() {
+    var title = $(this).children('.song-autocomplete').text();
+    var author = $(this).children('.author-autocomplete').text();
+    if (title == "" || author == "") {
+      return;
+    }
+    
+    addSongToList(title, author);
+});
 
 
 /*************************************
@@ -149,9 +152,8 @@ function addSongToList(title, author) {
       var songRow = songListTable.insertRow(); // Add to bottom
       var songTitleCell = songRow.insertCell(0);
       var songAuthorCell = songRow.insertCell(1);
-    } else {
-      var index = mSongListSize;
     }
+
 
     /* Fix up the HTML */
     $('#songListTable tbody tr td').attr('class', ''); // remove all previous classes
@@ -160,6 +162,7 @@ function addSongToList(title, author) {
     $('#songListTable tbody tr td:odd').attr('class', 'song-author');
 
     /* Add the song to the table */
+    var index = mSongListSize;
     $('.song-title:eq(' + index + ')').text(title);
     $('.song-author:eq(' + index + ')').text(author);
     mSongListSize += 1;
