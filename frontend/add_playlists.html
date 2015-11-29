@@ -34,10 +34,10 @@
       TOP BAR CONTENT & NOTIFICATIONS
       ***************************************************************************************************** -->
       <header class="header black-bg">
-              <div class="sidebar-toggle-box">
-                  <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
-              </div>
-            <a href="index.html" class="logo"><b>Al Gore Rhythms</b></a>
+        <div class="sidebar-toggle-box">
+          <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
+        </div>
+        <a href="index.html" class="logo"><b>Al Gore Rhythms</b></a>
       </header>
       
       <!-- ****************************************************************************************************
@@ -45,121 +45,125 @@
       ***************************************************************************************************** -->
       <aside>
         <div id="sidebar" class="nav-collapse ">
-            <ul class="sidebar-menu" id="nav-accordion">
-                <p class="centered"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></p>
-                <li class="mt">
-                    <a href="index.html">
-                        <i class="fa fa-dashboard"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                    <li class="sub-menu">
-                        <a href="add_playlists.html">
-                            <i class="fa fa-tasks"></i>
-                            <span>Add Playlists</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+          <ul class="sidebar-menu" id="nav-accordion">
+            <p class="centered"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></p>
+            <li class="mt">
+              <a href="index.html">
+                <i class="fa fa-dashboard"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="sub-menu">
+               <a href="add_playlists.html">
+                <i class="fa fa-tasks"></i>
+                <span>Add Playlists</span>
+               </a>
+            </li>
+          </ul>
+        </div>
       </aside>
       
       <!-- ****************************************************************************************************
       MAIN CONTENT
       ***************************************************************************************************** -->
       <section id="main-content">
-          <section class="wrapper">
-            <h3><i class="fa fa-angle-right"></i> Add Playlists</h3>
+        <section class="wrapper">
+          <h3><i class="fa fa-angle-right"></i> Add Playlists</h3>
 
+            <!--Top search bar -->
+            <div class="col-xs-12 mt">
+                <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . ." >
+            </div>
 
-              <!-- Left side autocomplete -->
-              <div class="col-xs-6 mt">
-                <div class="input-group">
-                  <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . ." >
-                </div>  
-                </br>
-                <div class="content-panel">
-                  <table id="autocompleteTable" class="table table-hover autocomplete-table">
-                    <thead>
-                      <tr>
-                        <th>Title</th>
-                        <th>Artist</th>
+            <!-- Left side -->
+            <div class="col-xs-6 mt"> 
+
+              <!-- Autocomplete box -->
+              <div class="content-panel">
+                <table id="autocompleteTable" class="table table-hover autocomplete-table">
+                  <h4>Autocomplete songs</h4>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Artist</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="song-row">
+                      <td class="song-ac-title"></td>
+                      <td class="song-ac-author"></td>
+                    </tr>
+                    <tr class="song-row">
+                      <td class="song-ac-title"></td>
+                      <td class="song-ac-author"></td>
+                    </tr>
+                    <tr class="song-row">
+                      <td class="song-ac-title"></td>
+                      <td class="song-ac-author"></td>
+                    </tr>
+                    <tr class="song-row">
+                      <td class="song-ac-title"></td>
+                      <td class="song-ac-author"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Add song, and upload file buttons -->
+              <button id="addListBtn" type="button" class="btn btn-primary btn-lg btn-block">Add to list</button>    
+              </br>
+              <div class="btn-group btn-group-lg">
+                <input id="chooseFileBtn" type="file" class="btn btn-theme"/>
+                <button id="uploadFileBtn" type="button" class="btn btn-theme">Upload file</button>
+              </div>
+
+            </div>
+
+            <!-- Right side -->
+            <div class="col-xs-6 mt">
+
+              <!-- Song list box -->
+              <div class="content-panel">
+                <table id="songListTable" class="table table-hover">
+                <h4>Songs to add</h4>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Artist</th>
+                  </tr>
+                </thead>
+                  <tbody>
+                      <tr class="song-row">
+                          <td class="song-title"></td>
+                          <td class="song-author"></td>
                       </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="song-row">
-                            <td>1</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>2</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>3</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>4</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-
-                <button id="addListBtn" type="button" class="btn btn-primary btn-lg btn-block">Add to list</button>    
-                <div class="input-group">
-                 <span class="input-group-btn">
-                    <button id="uploadListBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload list</button>
-                  </span>
-                  <input type="text" class="input-lg" id="uploadPopularity", placeholder="Popularity..." />
-                </div>
-                </br>
-                <div class="btn-group">
-                  <input id="chooseFileBtn" type="file" class="btn btn-theme input-lg"/>
-                  <button id="uploadFileBtn" type="button" class="btn btn-theme btn-lg">Upload file</button>
-                </div>
-
+                      <tr class="song-row">
+                          <td class="song-title"></td>
+                          <td class="song-author"></td>
+                      </tr>
+                      <tr class="song-row">
+                          <td class="song-title"></td>
+                          <td class="song-author"></td>
+                      </tr>
+                      <tr class="song-row">
+                          <td class="song-title"></td>
+                          <td class="song-author"></td>
+                      </tr>
+                  </tbody>
+                </table>
               </div>
 
-              <!-- Right side song list -->
-              <div class="col-xs-6 mt">
-                <div class="content-panel">
-                  <table id="songListTable" class="table table-hover">
-                    <hr>
-                    <tbody>
-                        <tr class="song-row">
-                            <td>1</td
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>2</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>3</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                        <tr class="song-row">
-                            <td>4</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
-                        </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <!-- Upload list buttons -->
+              <div class="input-group">
+               <span class="input-group-btn">
+                  <button id="uploadListBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload list</button>
+                </span>
+                <input type="text" class="input-lg" id="uploadPopularity", placeholder="Popularity..." />
               </div>
+            </div>
 
-            </div>  <!-- END Autocomplete and Song list tables -->
 
-
+          </div>  <!-- END MAIN -->
 
           </section>
       </section>
