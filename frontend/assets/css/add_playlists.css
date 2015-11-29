@@ -4,3 +4,9 @@ input[type=file] {
 	text-overflow: ellipsis;
 	width: 250px;
 }
+
+tr {
+   line-height: 40px;
+   min-height: 40px;
+   height: 40px;
+}

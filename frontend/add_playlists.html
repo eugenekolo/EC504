@@ -72,13 +72,14 @@
 
 
               <!-- Left side autocomplete -->
-              <div class="col-xs-6 mt">
-                <div class="input-group">
+              <div class="col-xs-12 mt">
                   <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . ." >
-                </div>  
-                </br>
+              </div>
+
+              <div class="col-xs-6 mt">    
                 <div class="content-panel">
                   <table id="autocompleteTable" class="table table-hover autocomplete-table">
+                    <h4>Autocomplete songs</h4>
                     <thead>
                       <tr>
                         <th>Title</th>
@@ -87,24 +88,20 @@
                     </thead>
                     <tbody>
                         <tr class="song-row">
-                            <td>1</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
+                            <td class="song-ac-title"></td>
+                            <td class="song-ac-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>2</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
+                            <td class="song-ac-title"></td>
+                            <td class="song-ac-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>3</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
+                            <td class="song-ac-title"></td>
+                            <td class="song-ac-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>4</td>
-                            <td class="song-title"></td>
-                            <td class="song-author"></td>
+                            <td class="song-ac-title"></td>
+                            <td class="song-ac-author"></td>
                         </tr>
                     </tbody>
                   </table>
@@ -112,16 +109,10 @@
 
 
                 <button id="addListBtn" type="button" class="btn btn-primary btn-lg btn-block">Add to list</button>    
-                <div class="input-group">
-                 <span class="input-group-btn">
-                    <button id="uploadListBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload list</button>
-                  </span>
-                  <input type="text" class="input-lg" id="uploadPopularity", placeholder="Popularity..." />
-                </div>
                 </br>
-                <div class="btn-group">
-                  <input id="chooseFileBtn" type="file" class="btn btn-theme input-lg"/>
-                  <button id="uploadFileBtn" type="button" class="btn btn-theme btn-lg">Upload file</button>
+                <div class="btn-group btn-group-lg">
+                  <input id="chooseFileBtn" type="file" class="btn btn-theme"/>
+                  <button id="uploadFileBtn" type="button" class="btn btn-theme">Upload file</button>
                 </div>
 
               </div>
@@ -130,30 +121,38 @@
               <div class="col-xs-6 mt">
                 <div class="content-panel">
                   <table id="songListTable" class="table table-hover">
-                    <hr>
+                  <h4>Songs to add</h4>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Artist</th>
+                    </tr>
+                  </thead>
                     <tbody>
                         <tr class="song-row">
-                            <td>1</td
                             <td class="song-title"></td>
                             <td class="song-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>2</td>
                             <td class="song-title"></td>
                             <td class="song-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>3</td>
                             <td class="song-title"></td>
                             <td class="song-author"></td>
                         </tr>
                         <tr class="song-row">
-                            <td>4</td>
                             <td class="song-title"></td>
                             <td class="song-author"></td>
                         </tr>
                     </tbody>
                   </table>
+                </div>
+                <div class="input-group">
+                 <span class="input-group-btn">
+                    <button id="uploadListBtn" type="button" class="btn btn-theme btn-lg btn-block">Upload list</button>
+                  </span>
+                  <input type="text" class="input-lg" id="uploadPopularity", placeholder="Popularity..." />
                 </div>
               </div>
 
