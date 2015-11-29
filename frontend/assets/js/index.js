@@ -41,17 +41,19 @@ $(function() {
         suggestPlaylist
     *********************/
     function suggestPlaylist() {
-        var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
+        var parseTitle = $('#enter-song').val().replace(/\//g, '\\\/').split('#');
         var title = parseTitle[0];
         if (title === '') {
             console.log("LET ME KNOW");
-            $('.author-suggest').text('');
+            
             removeTableRows();
             var author = $('#enter-song').val().split('#').pop();
             if (!(author === '')) {
                 $('.song-suggest').text('No playlist found');
+                $('.author-suggest').text('N/A');
             } else {
                 $('.song-suggest').text('');
+                $('.author-suggest').text('');
             }
         } else {
             var data = {};
@@ -81,14 +83,15 @@ $(function() {
                         addTableRows();
                         addTableRowsClasses();
                     }
-                    // console.log($('.song-suggest:first').text());
-                    // $('.playlist-row:first').remove();
+                    // Remove extra row create in above loop
+                    $('.playlist-row:last').remove();
                 },
                 error: function(data) {
                     // alert('Failed to retrieve Top8 content');
                     console.log('Failed to retrieve suggestPlaylist content');
                     removeTableRows();
                     $('.song-suggest').text('No Playlist Found');
+                    $('.author-suggest').text('N/A');
                 }
             });
         }
@@ -97,8 +100,10 @@ $(function() {
         getAutocomplete
     *********************/
     function autocomplete() {
-        var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
+        // console.log('Before: ' + $('#enter-song').val());
+        var parseTitle = $('#enter-song').val().replace(/\//g, '\\\/').split('#');
         var title = parseTitle[0];
+        console.log('After: ' + title);
         if (title === '') {
             console.log("LET ME KNOW");
             $('.song-autocomplete').text('');
@@ -166,7 +171,8 @@ $(function() {
     }
 
     function removeTableRows() {
-        $('.playlist-row:first').attr('class', 'temp');
+        // Hack to remove all rows except the first
+        $('.playlist-row:first').attr('class', 'temp'); 
         $('.playlist-row').remove();
         $('.playlist-row:first').attr('class', 'playlist-row');
     }
