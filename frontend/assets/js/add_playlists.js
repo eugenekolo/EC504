@@ -1,3 +1,7 @@
+/*************************************
+* On page load
+*************************************/
+var mSongListSize = 0;
 
 /*************************************
 * Event listeners
@@ -33,7 +37,6 @@ $("#uploadFileBtn").click(function () {
 });
 
 $("#uploadListBtn").click(function () {
-
   var data = {};
   $.ajax({
       type: 'POST',
@@ -53,40 +56,47 @@ $("#uploadListBtn").click(function () {
 
 /* Adds the specified song to the song list table */
 $("#addListBtn").click(function () {
-    var songRow = songListTable.insertRow(-1); // Add to bottom
-    var songTitleCell = songRow.insertCell(0);
-    var songAuthorCell = songRow.insertCell(1);
-    songTitleCell.innerHTML = "";
-    songAuthorCell.innerHTML = "";
+  $('.autocomplete-row').trigger('click');
 });
 
+/* Click handlers for navigating the autocomplete table */
+$('#goto_prev').click(gotoPrevious);
+$('#goto_next').click(gotoNext);
 
-/* #enter-song key press listener */
-/* In #enter-song on DOWN_KEY jump to the autoocomplete suggestions */
-/* In #enter-song on typeeable characters perform autocomplete */
-/* On untypeable characters, do nothing */
+
+/* Enter song key press listener */
 $('#enter-song').bind("keyup", function(e) {
     switch (event.keyCode) {
       case 37: // Left
-      case 38: // Up
       case 39: // Right
           break;
-      
+
+      case 38: // Up
+          gotoPrevious();
+          break;
+
       // TODO(eugenek): Get this working.
       case 40: // Down
-          $('#enter-song').blur();
-          $("select:first").focus();
-          $('.song-autocomplete:eq(' + 0 + ')').prop('selected', true);
-          for (var i = 1; i <= 3; i++) {
-              $('.song-autocomplete:eq(' + i + ')').prop('selected', false);
-          }
-          $('#suggested-playlist').prop('selected', false);
+          gotoNext();
+          break;
+
+      case 13: // Enter
 
       default:
           autocomplete();
+          break;
     }
-
 });
+
+
+/* */
+//$('.autocomplete-row').click(function() {
+//    var title = $(this).children('.song-autocomplete').text();
+//    var author = $(this).children('.author-autocomplete').text();
+//
+//    addSongToList(title, author);
+//});
+
 
 /*************************************
 * Logic functions
@@ -94,13 +104,18 @@ $('#enter-song').bind("keyup", function(e) {
 /* Send a prefix and get autocomplete entries */
 /* Update the autocomplete table with the results */
 function autocomplete() {
-    var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
-    var prefix = parseTitle[0];
+    //TODO(eugenek): Watch out for empty text
+    var prefix = $('#enter-song').val().replace(/\\/g, '\\/');
+
+    if (prefix == "") {
+      $('.song-autocomplete').text('');
+      $('.author-autocomplete').text('');
+      return;
+    }
 
     /* Send a prefix and get autocomplete entries */
     var data = {};
     data['song'] = prefix;
-
     $.ajax({
         type: 'POST',
         url: '/api/getAutocomplete',
@@ -111,11 +126,9 @@ function autocomplete() {
             var hash = JSON.parse(data);
 
             /* Clear the table */
-            for (var i = 0; i < 4; i++) {
-                $('.song-autocomplete').text('');
-                $('.author-autocomplete').text('');
-            }
-
+            $('.song-autocomplete').text('');
+            $('.author-autocomplete').text('');
+            
             /* Update the table */
             for (var i = 0; i < Object.keys(hash).length; i++) {
                 var title = hash[i]['title'];
@@ -128,6 +141,54 @@ function autocomplete() {
             console.log('Failed to retrieve getAutocomplete content');
         }
     });
+}
+
+function addSongToList(title, author) {
+    /* Gotta grow the table */
+    if (mSongListSize >= 4) {
+      var songRow = songListTable.insertRow(); // Add to bottom
+      var songTitleCell = songRow.insertCell(0);
+      var songAuthorCell = songRow.insertCell(1);
+    } else {
+      var index = mSongListSize;
+    }
+
+    /* Fix up the HTML */
+    $('#songListTable tbody tr td').attr('class', ''); // remove all previous classes
+    $('#songListTable tbody tr').attr('class', 'song-row');
+    $('#songListTable tbody tr td:even').attr('class', 'song-title');
+    $('#songListTable tbody tr td:odd').attr('class', 'song-author');
+
+    /* Add the song to the table */
+    $('.song-title:eq(' + index + ')').text(title);
+    $('.song-author:eq(' + index + ')').text(author);
+    mSongListSize += 1;
+}
+
+function highlight(trIndex) {
+    /* Loop back to the start if at end */
+    if( (trIndex+1) > $('#autocompleteTable tbody tr').length) {
+        trIndex = 0;
+    }
+
+    /* If tr exists, remove other row highlights and highlight the specific row */
+    if($('#autocompleteTable tbody tr:eq('+trIndex+')').length > 0) {
+        $('#autocompleteTable tbody tr').removeClass('highlight');        
+        $('#autocompleteTable tbody tr:eq('+trIndex+')').addClass('highlight');
+    }
+}
+
+function gotoNext(){
+    var tr = $("#autocompleteTable tbody").find('.highlight').index();
+    highlight(tr+1);
+    $("#autocompleteTable").focus();
+}
+
+function gotoPrevious () {
+    //TODO(eugenek): Bug ATM where cursor will jump to start of sentence and be left there. Annoying.
+    var tr = $("#autocompleteTable tbody").find('.highlight').index();
+    highlight(tr-1);
+    $("#autocompleteTable").focus();
 }
 
 
@@ -146,4 +207,4 @@ function promiseFileContents(file, dst) {
   }).promise();
 
   return promise;
-};
+}

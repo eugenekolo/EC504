@@ -118,11 +118,13 @@ $(function() {
     function autocomplete() {
         var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
         var prefix = parseTitle[0];
+        if (prefix == "") {
+            return;
+        }
 
         /* Send a prefix and get autocomplete entries */
         var data = {};
         data['song'] = prefix;
-
         $.ajax({
             type: 'POST',
             url: '/api/getAutocomplete',
@@ -133,11 +135,9 @@ $(function() {
                 var hash = JSON.parse(data);
 
                 /* Clear the table */
-                for (var i = 0; i < 4; i++) {
-                    $('.song-autocomplete').text('');
-                    $('.author-autocomplete').text('');
-                }
-
+                $('.song-autocomplete').text('');
+                $('.author-autocomplete').text('');
+                
                 /* Update the table */
                 for (var i = 0; i < Object.keys(hash).length; i++) {
                     var title = hash[i]['title'];
