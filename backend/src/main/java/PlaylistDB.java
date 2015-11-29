@@ -2,7 +2,7 @@
 * Al Gore Rhythms 
 * Playlist Application Project
 *
-*
+* This file implemenets the Playlist database.
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
@@ -12,11 +12,8 @@
 
 package algore;
 
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.PriorityQueue; // This is default implemented as a MinPriorityQueue
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Collections;
 
 public class PlaylistDB {
@@ -28,7 +25,7 @@ public class PlaylistDB {
         _top8 = new ArrayList<Playlist>();
     }
 
-    /** addPlaylist
+    /**
     * @param: Playlist playlist    A playlist to add to the database 
     * @return: true if playlist was added, false otherwise.
     */
@@ -58,8 +55,8 @@ public class PlaylistDB {
         if (isAdded) {
             _playlistDB.add(playlist);
             /* Update each song's best playlist and popularity */
-            Set<Song> songSet = playlist.getSongSet();
-            for (Song song : songSet) {
+            ArrayList<Song> songList = playlist.getSongList();
+            for (Song song : songList) {
                 song.setPopularity(song.getPopularity() + amountToChange);
                 song.setBestPlaylist(playlist);
             }
@@ -77,9 +74,9 @@ public class PlaylistDB {
             return true;
         }
 
-        Playlist worstTop8 = Collections.min(_top8);
-        if (playlist.getPopularity() > worstTop8.getPopularity()) {
-            _top8.remove(worstTop8);
+        Playlist worstPlaylist = Collections.min(_top8);
+        if (playlist.getPopularity() > worstPlaylist.getPopularity()) {
+            _top8.remove(worstPlaylist);
             _top8.add(playlist);
             return true;
         }

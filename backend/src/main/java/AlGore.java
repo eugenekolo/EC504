@@ -29,11 +29,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.SortedMap;
 import java.util.Collections;
 
 import static spark.Spark.*;
@@ -51,6 +47,7 @@ public class AlGore {
 
     public static void main(String[] args) {
         System.out.println("[*] Al Gore Rhythms started!");
+
         /****************************
         * Initialize data structures 
         ****************************/
@@ -59,7 +56,6 @@ public class AlGore {
         mPlaylistDB = new PlaylistDB();
         mAutocompleteDB = new AutocompleteDB();
 
-        //TODO(eugenek): Consider song author too?
         File song_list_txt = new File("./assets/song_list.txt");
         try (BufferedReader reader = new BufferedReader(new FileReader(song_list_txt))) {
             String songLine = reader.readLine();
@@ -69,7 +65,6 @@ public class AlGore {
                 String songId = songLineProps[0];
                 String songTitle = songLineProps[1];
                 String songAuthor = songLineProps[2];
-
                 mSongIdToTitleMap.putSong(songId, songTitle);
 
                 /* Map song titles -> song objects */
@@ -77,7 +72,7 @@ public class AlGore {
                 mSongTitleToSongMap.putSong(songTitle, song);
 
                 /* Add all song titles lower case to the AutocompleteDB */
-                /* Store a lowercase version and a case sensitive version */
+                /* Store a concated lowercase version and a case sensitive version */
                 mAutocompleteDB.putSong(songTitle.toLowerCase() + "##sep##" + songTitle);
 
                 songLine = reader.readLine();
@@ -104,16 +99,16 @@ public class AlGore {
         * Route programming
         ****************************/
 
-        /** POST /api/addPlaylist *******************************************************
+        /** POST /api/addPlaylists *******************************************************
         *   Gets fileData and parses out the individual playlists and adds them to the database
         *
-        *   @note: Updating the playlistDB also updates SongStringToPopMap   
+        *   @note: Updating the playlistDB also updates Song's popularities  
         *
         *   @req: JSON of <fileName> assosicated with <fileData>
         *       {<fileName>: <fileData>}
         *   @res: 200 if successful
         ********************************************************************************/
-        post("/api/addPlaylist", (req, res) -> {
+        post("/api/addPlaylists", (req, res) -> {
             // TODO(eugenek): How do you handle specifiying popularity when doing 1 entry?
             HashMap<String, String> json = jsonToMap(req.body());
             Integer attemptedAdd = 0;
@@ -134,19 +129,19 @@ public class AlGore {
                 Integer popularity = Integer.parseInt(playlistLineSplit[1]);
 
                 /* Map the input song ids to Song objects*/
-                Set<Song> songSet = new HashSet<Song>();
+                ArrayList<Song> songList = new ArrayList<Song>();
                 for (int i = 0; i < songIdList.length; i++) {
                     String songTitle = mSongIdToTitleMap.getSong(songIdList[i]);
                     Song song = mSongTitleToSongMap.getSong(songTitle);
-                    songSet.add(song);
+                    songList.add(song);
                 }
 
                 /* Add the Playlist to the playListDB*/
-                Playlist playlist = new Playlist(popularity, songSet);
+                Playlist playlist = new Playlist(popularity, songList);
                 playlistLine = reader.readLine();
+                boolean isActuallyAdded = mPlaylistDB.addPlaylist(playlist);
 
                 /* Server side logging */
-                boolean isActuallyAdded = mPlaylistDB.addPlaylist(playlist);
                 if (isActuallyAdded) {
                     actualAdd += 1;
                 }
@@ -154,11 +149,41 @@ public class AlGore {
             }
 
             /* Server side logging */
-            System.out.println("[addPlaylist] attempted: " + attemptedAdd + " actual: " + actualAdd + " playlists");
-            System.out.println("[addPlaylist] size of playlistDB: " + mPlaylistDB._playlistDB.size());
+            System.out.println("[addPlaylists] attempted: " + attemptedAdd + " actual: " + actualAdd + " playlists");
+            System.out.println("[addPlaylists] size of playlistDB: " + mPlaylistDB._playlistDB.size());
 
             res.status(200);
             return "Successfully added playlists";
+        });
+
+
+        /** POST /api/addPlaylist *******************************************************
+        *   Gets a list of song titles and popularity, and adds them as a playlist to the database
+        *
+        *   @note: Updating the playlistDB also updates Song's popularities  
+        *   @req: JSON of {{"songList":["Wolf", "Bird", "Cat"], "popularity":80}}
+        *   @res: 200 if successful
+        ********************************************************************************/
+        post("/api/addPlaylist", (req, res) -> {
+            String body = req.body();
+            PlaylistPOJO playlistPojo = new Gson().fromJson(body, PlaylistPOJO.class);
+
+            /* Map the input song titles to Song objects*/
+            ArrayList<Song> songList = new ArrayList<Song>();
+            for (String songTitle : playlistPojo.getSongList()) {
+                Song song = mSongTitleToSongMap.getSong(songTitle);
+                songList.add(song);
+            }
+
+            /* Add the Playlist to the playListDB*/
+            Playlist playlist = new Playlist(playlistPojo.getPopularity(), songList);
+            mPlaylistDB.addPlaylist(playlist);
+
+            /* Server side logging */
+            System.out.println("[addPlaylist] added 1 playlist");
+
+            res.status(200);
+            return "Successfully added playlist";
         });
 
 
@@ -175,7 +200,6 @@ public class AlGore {
         get("/api/getTop8", (req, res) -> {
             ArrayList<Playlist> top8List = mPlaylistDB.getTop8();
 
-            // TODO(eugenek): Song order is not preserved right now because it uses an Unordered Hashmap
             /* Convert the top8 list to a JSON map */
             HashMap<Integer, HashMap<String, String>> top8Map = new HashMap<Integer, HashMap<String, String>> ();
             for (int i = 0; i < top8List.size(); i++) {
@@ -202,13 +226,14 @@ public class AlGore {
         /** POST /api/getAutocomplete ****************************************************
         *   Gets a string and searches the database for the most popular matches
         *
+        *   @note: Case insensitive. 
+        *
         *   @req: JSON of "song" matched to partial completion
-        *       {"song": "Obses"}
+        *       {"song": "obses"}
         *   @res: JSON with top 5 most popular autocompleted songs
         *       {"0":"Obsesion","1":"Obsesionado","2":"Obsession Confession"}
         *********************************************************************************/
         post("/api/getAutocomplete", (req, res) -> {
-            // TODO(eugenek): Change 0 default popularity to default null?
             HashMap<String, String> json = jsonToMap(req.body());    
             String lowerCaseSong = json.get("song").toLowerCase();
             ArrayList<String> concatTitles = mAutocompleteDB.getPrefixList(lowerCaseSong);
@@ -262,8 +287,8 @@ public class AlGore {
         *   @req: JSON of "song" matches to <songTitle>
         *       {"song": "Obsesionado"}
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver##El Celoso /
-        *                    ##El Columpio##La Gran Senora##"}
+        *       {"mostPopular":"Obsesionado##Me Gusta Todo De Ti##La Promocion##No Puedo Volver
+        *            ##El Celoso##El Columpio##La Gran Senora##"}
         ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
             HashMap<String, String> json = jsonToMap(req.body());    
@@ -304,7 +329,7 @@ public class AlGore {
         return gson.toJson(object);
     }
 
-    /** 
+   /** 
     * Converts a JSON string to a HashMap.
     */
     public static HashMap<String, String> jsonToMap(String json) {
@@ -312,13 +337,12 @@ public class AlGore {
             new TypeToken<HashMap<String, String>>(){}.getType());
         return map;
     }
-
     /**
-    * Converts a Set<Song> to a string 
+    * Converts a ArrayList<Song> to a string 
     */
-    public static String songSetToString(Set<Song> songSet) {
+    public static String songListToString(ArrayList<Song> songList) {
         String playlistSongString = "";
-        for (Song song : songSet) {
+        for (Song song : songList) {
             playlistSongString += song.getTitle() + "##";
         }
         return playlistSongString;
@@ -328,7 +352,7 @@ public class AlGore {
     * Converts a Playlist to a string
     */
     public static String playlistToTitle(Playlist playlist) {
-        return songSetToString(playlist.getSongSet());
+        return songListToString(playlist.getSongList());
     }
 
 }
