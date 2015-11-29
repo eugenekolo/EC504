@@ -11,6 +11,7 @@ $(function() {
         success: function(data) {
             // On success below jquery fills rows of Top8 table with data retrieved from /api/getTop8
             var hash = JSON.parse(data);
+            console.log(hash);
             for (var i = 0; i <= 7; i++) {
                 if (typeof hash[i] === 'undefined') {
                     $('td.playlist-name:eq(' + i + ')').text('N/A');
