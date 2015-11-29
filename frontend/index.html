@@ -70,15 +70,17 @@
       ***************************************************************************************************** -->
         <section id="main-content">
             <section class="wrapper">
-                <h3><i class="fa fa-angle-right"></i> Suggest Playlists </h3>
-                <!-- Left side autocomplete -->
+                <h3><i class="fa fa-angle-right"></i> Suggest Playlists</h3>
+                <!--Top search bar -->
+                <div class="col-xs-12 mt">
+                    <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . .">
+                </div>
+                <!-- Left side -->
                 <div class="col-xs-6 mt">
-                    <div class="input-group">
-                        <input type="text" id="enter-song" class="form-control input-lg" placeholder="Enter Song . . .">
-                    </div>
-                    </br>
+                    <!-- Autocomplete box -->
                     <div class="content-panel">
-                        <table class="table table-hover autocomplete-table">
+                        <table id="autocompleteTable" class="table table-hover autocomplete-table">
+                            <h4>Autocomplete songs</h4>
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -108,7 +110,7 @@
                     <br>
                     <div class="content-panel">
                         <table class="table table-hover">
-                            <h4><i class="fa fa-angle-right"></i> TOP 8</h4>
+                            <h4>TOP 8</h4>
                             <hr>
                             <thead>
                                 <tr>
@@ -163,11 +165,12 @@
                     </div>
                     <!--/content-panel -->
                 </div>
-                <!-- Right side song list -->
+                <!-- Right side -->
                 <div class="col-xs-6 mt">
+                    <!-- Song list box -->
                     <div class="content-panel">
                         <table class="table table-hover autocomplete-table">
-                            <h4><i class="fa fa-angle-right"></i> Suggested Playlist</h4>
+                            <h4>Suggested Playlist</h4>
                             <hr>
                             <thead>
                                 <tr>
@@ -184,7 +187,7 @@
                         </table>
                     </div>
                 </div>
-                <!-- END Autocomplete and Song list tables -->
+                <!-- END MAIN -->
             </section>
         </section>
     </section>
