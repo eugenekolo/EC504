@@ -268,7 +268,7 @@ public class AlGore {
                                    top8Map.get(i).getPopularity());
             }
 
-            return mapToJson(top8Map);
+            return objToJson(top8Map);
         });
 
 
@@ -342,7 +342,7 @@ public class AlGore {
                     + song.getPopularity());
             }
 
-            return mapToJson(songTitlesMap);
+            return objToJson(songTitlesMap);
         });
 
 
@@ -350,33 +350,59 @@ public class AlGore {
         *   Gets a song title and suggests the most popular playlist that has it
         *
         *   @req: JSON of "song" matches to <songTitle>
-        *       {"song": "Obsesionado by Janice"}
+        *       { "song": { 
+        *                   "title":"Obsesionado",
+        *                   "author":"German Montero"
+        *                 }
+        *       }
+        *        
         *   @res: JSON with most popular playlist that has the song
-        *       {"mostPopular":"Obsesionado by Janice##Me Gusta Todo De Ti by John##La Promocion by Jill
-                  ##No Puedo Volver by Jack##El Celoso by Jackie##El Columpio by Justin##La Gran Senora by Jay##"}
+        *       {"mostPopular": {"songList":[{
+        *                           "title":"Cat",
+        *                           "author":"Janice",
+        *                           "popularity":"85"
+        *                          },
+        *                          {
+        *                           "title":"Dog",
+        *                           "author": "Jim",
+        *                           "popularity":"35"
+        *                          }
+        *                          ...
+        *                        ],
+        *                       "popularity": "64"
+        *        }
         ********************************************************************************/
         post("/api/suggestPlaylist", (req, res) -> {
-            HashMap<String, String> json = jsonToMap(req.body());    
-            String songTitle = json.get("song");
+            HashMap<String, HashMap<String,String>> json = jsonToMapMap(req.body());    
+            String songTitle = json.get("song").get("title");
+            String songAuthor = json.get("song").get("author");
 
             /* Get best playlist */
-            Song song = mSongTitleToSongMap.getSong(songTitle);
+            Song song = mSongTitleToSongMap.getSong(songTitle + "##" + songAuthor);
             if (song == null || song.getBestPlaylist() == null) {
                 res.status(400);
                 return "Sorry, song doesn't exist, or no playlist contains it.";
             }
             Playlist bestPlaylist = song.getBestPlaylist();
-            String playlistTitle = playlistToTitle(bestPlaylist);
 
-            /* Convert playlist string to a JSON map */
-            HashMap<String, String> mostPopular = new HashMap<String, String>();
-            mostPopular.put("mostPopular", playlistTitle);
+            /* Convert playlist to a PlaylistPOJO*/
+            ArrayList<HashMap<String,String>> songList = new ArrayList<HashMap<String,String>>();
+             for (Song x : bestPlaylist.getSongList()) {
+                HashMap<String,String> songData = new HashMap<String,String>();
+                songData.put("title", x.getTitle());
+                songData.put("author", x.getAuthor());
+                songData.put("popularity", String.valueOf(x.getPopularity()));
+                System.out.println("playlist has " + x.getTitle());
+                songList.add(songData);
+            }
+            PlaylistPOJO playlistPojo = new PlaylistPOJO(bestPlaylist.getPopularity(), songList);
+
 
             /* Server side logging */
             System.out.println("[suggestPlaylist] looking for best playlist with: \"" + json.get("song") + "\"");
-            System.out.println("[+]\tfound: \"" + playlistTitle + "\"");
+            System.out.println("[+]\tfound: \"" + "TODO:FIXME" + "\"");
 
-            return mapToJson(mostPopular);
+            return objToJson(playlistPojo);
         });
         
 
@@ -389,7 +415,7 @@ public class AlGore {
     /**
     * Converts an POJO to a JSON string 
     */
-    public static String mapToJson(Object object) {
+    public static String objToJson(Object object) {
         Gson gson = new Gson();
         return gson.toJson(object);
     }
@@ -402,6 +428,16 @@ public class AlGore {
             new TypeToken<HashMap<String, String>>(){}.getType());
         return map;
     }
+
+    /** 
+    * Converts a JSON string to a HashMap.
+    */
+    public static HashMap<String, HashMap<String,String>> jsonToMapMap(String json) {
+        HashMap<String, HashMap<String,String>> map = new Gson().fromJson(json, 
+            new TypeToken<HashMap<String, HashMap<String,String>>>(){}.getType());
+        return map;
+    }
+
     /**
     * Converts a ArrayList<Song> to a string 
     */
