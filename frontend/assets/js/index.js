@@ -44,15 +44,16 @@ $(function() {
         if ($('#enter-song').val() === '') {
             console.log("LET ME KNOW");
             $('#suggested-playlist').text('');
-            $('.author-autocomplete').text('');
+            $('.suggested-popularity').text('');
         } else {
             var data = {};
-            var title = $('#enter-song').val().replace(/\\/g, '\\/');
-            var author = $('#enter-song').val().split('- ').pop();
+            var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
+            var title = parseTitle[0];
+            var author = $('#enter-song').val().split('#').pop();
             // Gets the song name text
             data['song'] = {
-                'title': 'Use Somebody',
-                'author': 'Kings Of Leon'
+                'title': title,
+                'author': author
             };
             // data['song'] = "As She's Walking Away (w\\/ Alan Jackson)"; // Gets the song name text
             console.log(data['song']);
@@ -93,7 +94,9 @@ $(function() {
             $('.author-autocomplete').text('');
         } else {
             var data = {};
-            data['song'] = $('#enter-song').val(); // Gets the song name text
+            var parseTitle = $('#enter-song').val().replace(/\\/g, '\\/').split('#');
+            var title = parseTitle[0];
+            data['song'] = title; // Gets the song name text
             // console.log(data['song']);
             $.ajax({
                 type: 'POST',
@@ -167,9 +170,11 @@ $(function() {
     // });
     // Clicking on an autocomplete suggestion changes the enter song text
     // to the autocomplete suggestion and updates the suggested playlist
-    $('.song-autocomplete').click(function() {
+    $('.playlist-row').click(function() {
         var enterSong = $('#enter-song');
-        enterSong.val($(this).text());
+        var song = $(this).children('.song-autocomplete').text();
+        var author = $(this).children('.author-autocomplete').text();
+        enterSong.val(song + '#' + author);
         var e = $.Event('keyup');
         e.which = 13; // 13 = enter key
         enterSong.trigger(e); // Triggers keyup event listener for enter song text input
