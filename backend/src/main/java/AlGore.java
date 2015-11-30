@@ -122,7 +122,7 @@ public class AlGore {
             /* Scan the playlist data line by line and add each playlist */
             BufferedReader reader = new BufferedReader(new StringReader(data));
             String playlistLine = reader.readLine();
-            while (playlistLine != null) {
+            while (playlistLine != null && attemptedAdd < 128) {
                 /* Extract the song ids and popularity */
                 String[] playlistLineSplit = playlistLine.split("\t");
                 String[] songIdList = playlistLineSplit[0].split(" ");

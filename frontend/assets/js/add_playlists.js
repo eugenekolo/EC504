@@ -17,7 +17,13 @@ $("#uploadFileBtn").click(function () {
   var data = {}; // 
   var promise = promiseFileContents(file, data);
 
+  
+
   $.when(promise).then(function (contents) {
+      if (contents.split("\n").length > 128+1) {
+        alert("Warning: Only adding the first 128 playlists from the file");
+      }
+
       $.ajax({
           type: 'POST',
           url: '/api/addPlaylists',
@@ -26,10 +32,8 @@ $("#uploadFileBtn").click(function () {
           contentType: 'application/json',
           processData: false,
           success: function (data) {
-            // TODO(eugenek): Add here.
           },
           error: function (data) {
-            // TODO(eugenek): Add here.
           }
       });
   });
@@ -61,10 +65,8 @@ $("#uploadListBtn").click(function () {
       contentType: 'application/json',
       processData: false,
       success: function (data) {
-        // TODO(eugenek): Add here.
       },
       error: function (data) {
-        // TODO(eugenek): Add here.
       }
   });
 });
@@ -85,7 +87,6 @@ $('#enter-song').bind("keyup", function(e) {
           gotoPrevious();
           break;
 
-      // TODO(eugenek): Get this working.
       case 40: // Down
           gotoNext();
           break;
@@ -119,7 +120,7 @@ $('.autocomplete-row').click(function() {
 /* Send a prefix and get autocomplete entries */
 /* Update the autocomplete table with the results */
 function autocomplete() {
-    //TODO(eugenek): Watch out for empty text
+
     var prefix = $('#enter-song').val().replace(/\\/g, '\\/');
 
     if (prefix == "") {
