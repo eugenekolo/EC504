@@ -209,7 +209,7 @@ $(function() {
           case 38: // Up
               gotoPrevious();
               break;
-
+   
           case 40: // Down
               gotoNext();
               break;
@@ -225,6 +225,12 @@ $(function() {
             }
     });
 
+    $("#enter-song").keydown(function(e){
+        if(e.which == 38 || e.which == 40) {
+            e.preventDefault();
+        }
+    });
+
 
     /* When a autocomplete row is clicked, add the song to the song list */
     $('.autocomplete-row').click(function() {
@@ -234,6 +240,8 @@ $(function() {
            return;
         }
 
+        $('#autocompleteTable tbody tr').removeClass('highlight');        
+        $(this).addClass('highlight');
         suggestPlaylist(title, author);
     });
 

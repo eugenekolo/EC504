@@ -101,6 +101,12 @@ $('#enter-song').bind("keyup", function(e) {
     }
 });
 
+$("#enter-song").keydown(function(e){
+    if(e.which == 38 || e.which == 40) {
+        e.preventDefault();
+    }
+});
+
 /* When a autocomplete row is clicked, add the song to the song list */
 $('.autocomplete-row').click(function() {
     var title = $(this).children('.song-autocomplete').text();
@@ -108,6 +114,9 @@ $('.autocomplete-row').click(function() {
     if (title == "" || author == "") {
       return;
     }
+
+    $('#autocompleteTable tbody tr').removeClass('highlight');        
+    $(this).addClass('highlight');
 
     addSongToList(title, author);
 });
