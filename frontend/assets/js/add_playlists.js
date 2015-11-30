@@ -119,7 +119,6 @@ $('.autocomplete-row').click(function() {
 /* Send a prefix and get autocomplete entries */
 /* Update the autocomplete table with the results */
 function autocomplete() {
-
     var prefix = $('#enter-song').val().replace(/\\/g, '\\/');
 
     if (prefix == "") {
