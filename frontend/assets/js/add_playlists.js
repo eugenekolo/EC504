@@ -7,7 +7,6 @@ var mSongListSize = 0;
 * Event listeners
 **************************************/
 
-// TODO(eugenek): Add validation.
 /* On unploadFileBtn click, upload the specified file to the backend */
 $("#uploadFileBtn").click(function () {
   var file = $('#chooseFileBtn').prop('files')[0]; // Only one file
