@@ -24,9 +24,10 @@ echo "[*]     ps option = ${cmd}"
 
 echo "[*] Starting Al Gore Rhythms"
 cd ./backend
-./run.sh 2>/dev/null &
+java -jar ./build/libs/backend-all.jar 2>/dev/null &
 sleep 1
 pid=`ps -o pid,${cmd} | grep backend-all | head -n 1 | awk '{print $1}'`
+
 echo "[*] Started backend on localhost:5000"
 echo "[*]    pid = ${pid}"
 

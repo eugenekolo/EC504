@@ -3,14 +3,13 @@
 Playlist App 
 Eugene Kolo & Brandon Braxton
 
-# Installation
-    
-    brew install gradle
-    cd ./backend && ./build.sh && cd ..
+# Dependencies
+You must install gradle, or suffer through installing dependencies yourself. 
+This is done via `brew install gradle` on OSX. `sudo apt-get install gradle` on Ubuntu, or visit their website
+and download a copy.
 
-	
-# Running
-
-    ./algore.sh
+# Install and run
+     
+    ./build.sh && ./algore.sh
 
 

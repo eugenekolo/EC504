@@ -90,7 +90,7 @@ The playlist database, can have an `Insert` of a new playlist, `P`, done in `O(l
 #### Update song data
 The playlist, `P`, will contain `S` songs and 1 popularity value, `V`.
 
-Each song in the `SongDB` will `Set-Pop` `O(S)` times in `O(1)`, and potentially perform a `Set-Best` in `O(1)`, if `P`'s popularity is greater than the song's previous best playlist's popularity.
+Each song in the `SongDB` will `Set-Pop` `O(S)` times in `O(1)`, and potentially perform a `Set-Best` in `O(1)`, if `P`'s popularity is greater than the song's previous best playlist's popularity. This allows for efficient lookup when suggesting the best playlist that contains a specific song.
 
 The amount to `Set-Pop` to is determined based on if a playlist was added and removed, due to being replaced.
 
@@ -113,7 +113,4 @@ Songs are autocompleted using the `AutocompleteDB`, a Patricia Trie. Autocomplet
 
 Because the number of songs returned is so small (song list is only 4000 elements), on average <4 songs, a simple sort is done to find the top 4 songs based on their popularity stored with them in their Java bean.
 
-
-### Suggesting best playlist
-The best playlist for a specific song 
 
