@@ -54,15 +54,10 @@ $("#uploadListBtn").click(function () {
   });
 });
 
-/* Adds the specified song to the song list table */
+/* Add the entire autocomplete table to the song list */
 $("#addListBtn").click(function () {
   $('.autocomplete-row').trigger('click');
 });
-
-/* Click handlers for navigating the autocomplete table */
-$('#goto_prev').click(gotoPrevious);
-$('#goto_next').click(gotoNext);
-
 
 /* Enter song key press listener */
 $('#enter-song').bind("keyup", function(e) {
@@ -81,7 +76,10 @@ $('#enter-song').bind("keyup", function(e) {
           break;
 
       case 13: // Enter
-
+          var tr = $("#autocompleteTable tbody").find('.highlight');
+          tr.trigger('click');
+          break;
+          
       default:
           autocomplete();
           break;
@@ -89,14 +87,14 @@ $('#enter-song').bind("keyup", function(e) {
 });
 
 
-/* */
+/* When a autocomplete row is clicked, add the song to the song list */
 $('.autocomplete-row').click(function() {
     var title = $(this).children('.song-autocomplete').text();
     var author = $(this).children('.author-autocomplete').text();
     if (title == "" || author == "") {
       return;
     }
-    
+
     addSongToList(title, author);
 });
 
