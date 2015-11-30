@@ -38,6 +38,21 @@ $("#uploadFileBtn").click(function () {
 
 $("#uploadListBtn").click(function () {
   var data = {};
+  var popularity = $("#uploadPopularity").val();
+  var songList = $('#songListTable tbody tr');
+
+  /* Transform the songListTable to a list of song maps */
+  var songArray = []
+  for (var i = 0; i < mSongListSize; i++) {
+    var title = $(songList[i]).children('.song-title').text();
+    var author = $(songList[i]).children('.song-author').text();
+    var song = {'title':title, 'author':author};
+    console.log(title, author);
+    songArray.push(song);
+  }
+
+  data['songList'] = songArray;
+  data['popularity'] = popularity;
   $.ajax({
       type: 'POST',
       url: '/api/addPlaylist',
@@ -79,13 +94,12 @@ $('#enter-song').bind("keyup", function(e) {
           var tr = $("#autocompleteTable tbody").find('.highlight');
           tr.trigger('click');
           break;
-          
+
       default:
           autocomplete();
           break;
     }
 });
-
 
 /* When a autocomplete row is clicked, add the song to the song list */
 $('.autocomplete-row').click(function() {
@@ -134,8 +148,8 @@ function autocomplete() {
             for (var i = 0; i < Object.keys(hash).length; i++) {
                 var title = hash[i]['title'];
                 var author = hash[i]['author'];
-                $('.song-autocomplete:eq(' + i + ')').text(title.replace(/\\/g, ''));
-                $('.author-autocomplete:eq(' + i + ')').text(author.replace(/\\/g, ''));
+                $('.song-autocomplete:eq(' + i + ')').text(title);
+                $('.author-autocomplete:eq(' + i + ')').text(author);
             }
         },
         error: function(data) {
