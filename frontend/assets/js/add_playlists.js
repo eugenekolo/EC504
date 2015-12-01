@@ -103,12 +103,13 @@ $('#enter-song').bind("keyup", function(e) {
 
 /* When a autocomplete row is clicked, add the song to the song list */
 $('.autocomplete-row').click(function() {
+    var tr = $(this).index();
     var title = $(this).children('.song-autocomplete').text();
     var author = $(this).children('.author-autocomplete').text();
     if (title == "" || author == "") {
       return;
     }
-
+    highlight(tr);
     addSongToList(title, author);
 });
 

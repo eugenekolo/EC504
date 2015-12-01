@@ -225,15 +225,15 @@ $(function() {
             }
     });
 
-
     /* When a autocomplete row is clicked, add the song to the song list */
     $('.autocomplete-row').click(function() {
+        var tr = $(this).index();
         var title = $(this).children('.song-autocomplete').text();
         var author = $(this).children('.author-autocomplete').text();
         if (title == "" || author == "") {
            return;
         }
-
+        highlight(tr); // Highlights clicked row
         suggestPlaylist(title, author);
     });
 
