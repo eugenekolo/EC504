@@ -1,0 +1,114 @@
+/** POST /api/addPlaylists *******************************************************
+*   Gets fileData and parses out the individual playlists and adds them to the database
+*
+*   @note: Updating the playlistDB also updates Song's popularities  
+*
+*   @req: JSON of <fileName> assosicated with <fileData>
+*       {<fileName>: <fileData>}
+*   @res: 200 if successful
+********************************************************************************/
+
+/** POST /api/addPlaylist *******************************************************
+*   Gets a list of song titles and popularity, and adds them as a playlist to the database
+*
+*   @note: Updating the playlistDB also updates Song's popularities  
+*   @req: JSON of {"songList":[{
+*                                  "title":"Obsession Confession",
+*                                  "author":"Slash"
+*                                },
+*                                {
+*                                  "title":"Obsesion",
+*                                  "author":"Roberto Pulido"
+*                                }
+*                              ],
+*                  "popularity":"80"
+*                  }
+*   @res: 200 if successful
+********************************************************************************/
+
+
+/** GET /api/getTop8 ************************************************************
+*   Returns Top 8 playlists based on popularity.
+*
+*   @req: blank
+*   @res: JSON map of top 8 playlists song list sepated by ##
+*       {"0":{"songList":[{
+*                           "title":"Apple",
+*                           "author":"Joe",
+*                           "popularity":"80"
+*                          },
+*                          {
+*                           "title":"Orange",
+*                           "author":"Snoop",
+*                           "popularity":"25" 
+*                          }
+*                        ],
+*               "popularity": "78"
+*             },
+*       {"1":{"songList":[{
+*                           "title":"Cat",
+*                           "author":"Janice",
+*                           "popularity":"85"
+*                          },
+*                          {
+*                           "title":"Dog",
+*                           "author": "Jim",
+*                           "popularity":"35"
+*                          }
+*                        ],
+*               "popularity": "64"
+*             },
+*        ...
+*       }
+*
+********************************************************************************/
+
+
+/** POST /api/getAutocomplete ****************************************************
+*   Gets a string and searches the database for the most popular matches
+*
+*   @note: Case insensitive. 
+*
+*   @req: JSON of "song" matched to partial completion
+*       {"song": "obses"}
+*   @res: JSON with top 4 most popular autocompleted songs
+*       {"0": {
+*               "title": "Obsesion",
+*               "author": "Roberto Pulido"
+*              },
+*         "1":
+*              {
+*               "title":"Obsession Confession",
+*               "author": "Slash"
+*              }
+*          ....
+*        }
+*
+*********************************************************************************/
+
+/** POST /api/suggestPlaylist ***************************************************
+*   Gets a song title and suggests the most popular playlist that has it
+*
+*   @req: JSON of "song" matches to <songTitle>
+*       { "song": { 
+*                   "title":"Obsesionado",
+*                   "author":"German Montero"
+*                 }
+*       }
+*        
+*   @res: JSON with most popular playlist that has the song
+*       {"mostPopular": {"songList":[{
+*                           "title":"Cat",
+*                           "author":"Janice",
+*                           "popularity":"85"
+*                          },
+*                          {
+*                           "title":"Dog",
+*                           "author": "Jim",
+*                           "popularity":"35"
+*                          }
+*                          ...
+*                        ],
+*                       "popularity": "64"
+*        }
+********************************************************************************/

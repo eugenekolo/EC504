@@ -1,6 +1,6 @@
 # Playlist App Report
-Eugene Kolo and Braxton Brewton  
-eugene@kolobyte.com  braxtonbrewton@gmail.com  
+Eugene Kolo | Braxton Brewton  
+eugene@kolobyte.com  | braxtonbrewton@gmail.com  
 November 2015
 
 ## Web
@@ -9,22 +9,8 @@ November 2015
 
 We utilized HTML, CSS, and javascript to handle client side operations. Our HTML and CSS present a responsive layout for the user with the help of Twitter’s Bootstrap. Our javascript code primarily used jQuery libraries to perform AJAX requests to the backend. These requests enabled our web app to respond real-time to user input.
 
-### AJAX Requests
-
-The web app performs 5 different requests to 5 different backend routes. 
-
-Each time the Suggest Playlists page is loaded, a `GET` request is made to the `/api/getTop8` backend route. Once the request is processed, the backend returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by most to least popular.
-
-On any character key press, an event handler is triggered that converts the text typed thus far in the enter song text input field into a string. The string is then immediately input into our `autocomplete()` function. The `autocomplete()` function performs a `POST` request with the string to the backend route `/api/getAutocomplete`, returning the songs in the database that match the entry.
-
-Upon clicking or pressing enter on any of the four rows of the autocomplete table found in the suggest playlists page, the corresponding row’s song and artist are entered into a `suggestPlaylist()` function. The `suggestPlaylist()` function submits a `POST` request to the backend route `/api/suggestPlaylist` with the given artist and song, returning a hash that represents a playlist that contains the selected song.
-
-In a situation where a user creates a playlist by selecting songs from the autocomplete table and inputting a popularity value, the user must click the `upload list` button to upload all songs from the `Songs to add` table to the `PlaylistDB` database as one playlist. Clicking the button triggers an event handler that performs a `POST` request to the backend route `/api/addPlaylist` with the given songs, artists, and popularity in the form of a hash. This route stores the playlist hash in the proper location within the database.
-
-Alternatively, a user may upload up to 128 playlists at a time to the database by uploading a text file containing playlists. By clicking on the `upload file` button the user triggers a `POST` request to the backend route `/api/addPlaylists` containing the playlists. This route stores the playlist hash in the proper location within our database.
-
 ### Backend
-We utilized Spark Java to create a RESTful API. The API can be used by any frontend, and features can be easily added to it. Our API always returns JSON and is documented here:
+We utilized Spark Java to create a RESTful API. The API can be used by any frontend, and features can be easily added to it. Our API always returns JSON and is documented at the bottom of this report.
 
 We have 5 routes:
 
@@ -34,6 +20,20 @@ We have 5 routes:
     POST /api/getAutocomplete
     POST /api/suggestPlaylist
 	
+### Requests and Responses
+
+The web app performs 5 different requests to 5 different backend routes. 
+
+Each time the **suggest playlists page** is loaded, a `GET` request is made to the `/api/getTop8` backend route. The backend processes the request, and returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by popularity.
+
+When a typeable key is entered into the **song search bar**, an event handler is triggered that sends the thus far typed text to the frontend `autocomplete()` function. The `autocomplete()` function performs a `POST /api/getAutocomplete` with the song search bar text. The backend then returns the songs in the database that prefix with it. 
+
+Upon clicking or pressing enter on any of the four rows of the autocomplete table found in the Suggest Playlists Page, the corresponding row’s song and artist are passed to the `suggestPlaylist()` function. `suggestPlaylist()` submits a `POST /api/suggestPlaylist` with the given artist and song. A hash representing a playlist that contains the selected song is returned.
+
+A user may create a playlist on the **add playlists page**. A user can select songs by entering them through the song search bar and selecting them from the autocomplete table. Once the user has finalized their playlist, they must input a popularity value associated with it. The user must then click the **upload list button** to upload all songs from the **Songs to add table** to the `PlaylistDB` database as one playlist. Clicking the button triggers an event handler that performs a `POST /api/addPlaylist` with the given songs, artists, and popularity an associative array. The backend then stores the playlist into the database.
+
+Alternatively, a user may upload up to 128 playlists at a time to the database by uploading a text file containing playlists. Clicking on the **Upload file button** the user triggers a `POST /api/addPlaylists` request containing the file. The file is then parsed by the backend and stores each playlist into the database.
+
 ## Algorithms and data structures
 ### Summary
 1. Add new playlist(s) to database
@@ -129,3 +129,124 @@ Songs are autocompleted using the `AutocompleteDB`, a Patricia Trie. Autocomplet
 Because the number of songs returned is so small (song list is only 4000 elements), on average <4 songs, a simple sort is done to find the top 4 songs based on their popularity stored with them in their Java bean.
 
 
+## Contributions
+Eugene worked on *Al Gore Rhythm's* Java data structures, algorithms, and the web backend. This is his first Java project from beginning to end. He additionally helped out with the frontend when necessary. 
+
+
+## Appendix
+### API Documentation
+    POST /api/addPlaylists
+    *   Gets fileData and parses out the individual playlists and adds them to the database
+    *
+    *   @note: Updating the playlistDB also updates Song's popularities  
+    *
+    *   @req: JSON of <fileName> assosicated with <fileData>
+    *       {<fileName>: <fileData>}
+    *   @res: 200 if successful
+
+# 
+
+    POST /api/addPlaylist
+    *   Gets a list of song titles and popularity, and adds them as a playlist to the database
+    *
+    *   @note: Updating the playlistDB also updates Song's popularities  
+    *   @req: JSON of {"songList":[{
+    *                                  "title":"Obsession Confession",
+    *                                  "author":"Slash"
+    *                                },
+    *                                {
+    *                                  "title":"Obsesion",a
+    *                                  "author":"Roberto Pulido"
+    *                                }
+    *                              ],
+    *                  "popularity":"80"
+    *                  }
+    *   @res: 200 if successful
+
+#
+
+    GET /api/getTop8
+    *   Returns Top 8 playlists based on popularity.
+    *
+    *   @req: blank
+    *   @res: JSON map of top 8 playlists song list sepated by ##
+    *       {"0":{"songList":[{
+    *                           "title":"Apple",
+    *                           "author":"Joe",
+    *                           "popularity":"80"
+    *                          },
+    *                          {
+    *                           "title":"Orange",
+    *                           "author":"Snoop",
+    *                           "popularity":"25" 
+    *                          }
+    *                        ],
+    *               "popularity": "78"
+    *             },
+    *       {"1":{"songList":[{
+    *                           "title":"Cat",
+    *                           "author":"Janice",
+    *                           "popularity":"85"
+    *                          },
+    *                          {
+    *                           "title":"Dog",
+    *                           "author": "Jim",
+    *                           "popularity":"35"
+    *                          }
+    *                        ],
+    *               "popularity": "64"
+    *             },
+    *        ...
+    *       }
+    *
+
+#
+
+    POST /api/getAutocomplete
+    *   Gets a string and searches the database for the most popular matches
+    *
+    *   @note: Case insensitive. 
+    *
+    *   @req: JSON of "song" matched to partial completion
+    *       {"song": "obses"}
+    *   @res: JSON with top 4 most popular autocompleted songs
+    *       {"0": {
+    *               "title": "Obsesion",
+    *               "author": "Roberto Pulido"
+    *              },
+    *         "1":
+    *              {
+    *               "title":"Obsession Confession",
+    *               "author": "Slash"
+    *              }
+    *          ....
+    *        }
+    *
+
+#
+
+    POST /api/suggestPlaylist
+    *   Gets a song title and suggests the most popular playlist that has it
+    *
+    *   @req: JSON of "song" matches to <songTitle>
+    *       { "song": { 
+    *                   "title":"Obsesionado",
+    *                   "author":"German Montero"
+    *                 }
+    *       }
+    *        
+    *   @res: JSON with most popular playlist that has the song
+    *       {"mostPopular": {"songList":[{
+    *                           "title":"Cat",
+    *                           "author":"Janice",
+    *                           "popularity":"85"
+    *                          },
+    *                          {
+    *                           "title":"Dog",
+    *                           "author": "Jim",
+    *                           "popularity":"35"
+    *                          }
+    *                          ...
+    *                        ],
+    *                       "popularity": "64"
+    *        }
