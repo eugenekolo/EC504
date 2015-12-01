@@ -15,7 +15,7 @@ The web app performs 5 different requests to 5 different backend routes.
 
 Each time the Suggest Playlists page is loaded, a `GET` request is made to the `/api/getTop8` backend route. Once the request is processed, the backend returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by most to least popular.
 
-On any character key press, an event handler is triggered that converts the text typed thus far in the enter song text input field into a string. The string is then immediately input into an `autocomplete()` function. The `autocomplete()` function performs a `POST` request with the string to the backend route `/api/getAutocomplete`, returning the songs in the database that match the entry.
+On any character key press, an event handler is triggered that converts the text typed thus far in the enter song text input field into a string. The string is then immediately input into our `autocomplete()` function. The `autocomplete()` function performs a `POST` request with the string to the backend route `/api/getAutocomplete`, returning the songs in the database that match the entry.
 
 Upon clicking or pressing enter on any of the four rows of the autocomplete table found in the suggest playlists page, the corresponding row’s song and artist are entered into a `suggestPlaylist()` function. The `suggestPlaylist()` function submits a `POST` request to the backend route `/api/suggestPlaylist` with the given artist and song, returning a hash that represents a playlist that contains the selected song.
 
