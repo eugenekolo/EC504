@@ -6,7 +6,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.0
+* @version: 1.0
 * @since: November 25, 2015
 ********************************************************************************/
 

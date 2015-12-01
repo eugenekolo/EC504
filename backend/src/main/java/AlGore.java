@@ -6,7 +6,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.9
+* @version: 1.0
 * @since: November 25, 2015
 
 * Features:
@@ -99,7 +99,6 @@ public class AlGore {
         /****************************
         * Route programming
         ****************************/
-
         /** POST /api/addPlaylists *******************************************************
         *   Gets fileData and parses out the individual playlists and adds them to the database
         *
@@ -309,7 +308,7 @@ public class AlGore {
             for (String songTitle : songTitles) {
                 Song song = mSongTitleToSongMap.getSong(songTitle);
 
-                // Filter songList to be the 4 most popular songs
+                /* Filter songList to be the 4 most popular songs */
                 if (songList.size() < 4) {
                     songList.add(song);
                 } 
@@ -401,9 +400,9 @@ public class AlGore {
 
             return objToJson(playlistPojo);
         });
-        
 
-    }
+
+    } // END MAIN METHOD
 
 
     /****************************
@@ -459,4 +458,4 @@ public class AlGore {
         return playlistSongString;
     }
 
-}
+} // END ALGORE CLASS

@@ -7,7 +7,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.9
+* @version: 1.0
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -69,9 +69,6 @@ public class Song implements Comparable {
     public Integer getPopularity() {
         return _popularity;
     }
-
-
-
 
     /**
     * Sets the bestPlaylist if the input's popularity is greater

@@ -7,7 +7,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.9
+* @version: 1.0
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -41,7 +41,7 @@ public class Playlist implements Comparable {
     public void getPopularity(Integer popularity) {
         _popularity = popularity;
     }
-
+    
 
     /**
     * Let Playlist be comparable by its popularity.

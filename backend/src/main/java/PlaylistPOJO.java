@@ -7,7 +7,7 @@
 *
 * @author: Eugene Kolo
 * @email: eugene@kolobyte.com
-* @version: 0.9
+* @version: 1.0
 * @since: November 25, 2015
 ********************************************************************************/
 
@@ -21,7 +21,6 @@ import java.util.HashMap;
 public class PlaylistPOJO {
     public Integer popularity;
     public ArrayList<HashMap<String,String>> songList;
-
 
     public PlaylistPOJO(Integer popularity_, ArrayList<HashMap<String,String>> songList_) {
     	popularity = popularity_;
