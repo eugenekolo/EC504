@@ -7,7 +7,7 @@ November 2015
 
 ### Frontend
 
-We utilized HTML, CSS, and javascript to handle client side operations. Our HTML and CSS present a responsive layout for the user with the help of Twitter’s Bootstrap. Our javascript primarily used jQuery libraries to perform AJAX requests to the backend. These requests enabled our web app to respond real-time to user input.
+We utilized HTML, CSS, and javascript to handle client side operations. Our HTML and CSS present a responsive layout for the user with the help of Twitter’s Bootstrap. Our javascript code primarily used jQuery libraries to perform AJAX requests to the backend. These requests enabled our web app to respond real-time to user input.
 
 ### AJAX Requests
 
