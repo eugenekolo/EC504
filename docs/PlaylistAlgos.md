@@ -1,12 +1,27 @@
 # Playlist App Report
 Eugene Kolo and Braxton Brewton  
-eugene@kolobyte.com  
+eugene@kolobyte.com  braxtonbrewton@gmail.com  
 November 2015
 
 ## Web
 
 ### Frontend
-TODO(braxton)
+
+We utilized HTML, CSS, and javascript to handle client side operations. Our HTML and CSS present a responsive layout for the user with the help of Twitter’s Bootstrap. Our javascript code primarily used jQuery libraries to perform AJAX requests to the backend. These requests enabled our web app to respond real-time to user input.
+
+### AJAX Requests
+
+The web app performs 5 different requests to 5 different backend routes. 
+
+Each time the Suggest Playlists page is loaded, a `GET` request is made to the `/api/getTop8` backend route. Once the request is processed, the backend returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by most to least popular.
+
+On any character key press, an event handler is triggered that converts the text typed thus far in the enter song text input field into a string. The string is then immediately input into our `autocomplete()` function. The `autocomplete()` function performs a `POST` request with the string to the backend route `/api/getAutocomplete`, returning the songs in the database that match the entry.
+
+Upon clicking or pressing enter on any of the four rows of the autocomplete table found in the suggest playlists page, the corresponding row’s song and artist are entered into a `suggestPlaylist()` function. The `suggestPlaylist()` function submits a `POST` request to the backend route `/api/suggestPlaylist` with the given artist and song, returning a hash that represents a playlist that contains the selected song.
+
+In a situation where a user creates a playlist by selecting songs from the autocomplete table and inputting a popularity value, the user must click the `upload list` button to upload all songs from the `Songs to add` table to the `PlaylistDB` database as one playlist. Clicking the button triggers an event handler that performs a `POST` request to the backend route `/api/addPlaylist` with the given songs, artists, and popularity in the form of a hash. This route stores the playlist hash in the proper location within the database.
+
+Alternatively, a user may upload up to 128 playlists at a time to the database by uploading a text file containing playlists. By clicking on the `upload file` button the user triggers a `POST` request to the backend route `/api/addPlaylists` containing the playlists. This route stores the playlist hash in the proper location within our database.
 
 ### Backend
 We utilized Spark Java to create a RESTful API. The API can be used by any frontend, and features can be easily added to it. Our API always returns JSON and is documented here:
