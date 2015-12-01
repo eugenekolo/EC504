@@ -1,6 +1,6 @@
 # Playlist App Report
 Eugene Kolo and Braxton Brewton  
-eugene@kolobyte.com  braxtonbrewton@gmail.com
+eugene@kolobyte.com  braxtonbrewton@gmail.com  
 November 2015
 
 ## Web
