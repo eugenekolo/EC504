@@ -131,6 +131,7 @@ Because the number of songs returned is so small (song list is only 4000 element
 ## Contributions
 Eugene worked on *Al Gore Rhythm's* Java data structures, algorithms, and the web backend. This is his first Java project from beginning to end. He additionally helped out with the frontend when necessary. 
 
+Braxton worked on *Al Gore Rhythm's* web frontend. He worked on the event handlers, requests to the backend, and the responsive layout.
 
 ## Appendix
 ### API Documentation
