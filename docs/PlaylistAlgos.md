@@ -13,7 +13,7 @@ We utilized HTML, CSS, and javascript to handle client side operations. Our HTML
 
 The web app performs 5 different requests to 5 different backend routes. 
 
-Each time the suggest playlists page is loaded, a `GET` request is made to the `/api/getTop8` backend route. Once the request is processed, the backend returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by most to least popular.
+Each time the Suggest Playlists page is loaded, a `GET` request is made to the `/api/getTop8` backend route. Once the request is processed, the backend returns a hash containing the top 8 most popular playlists. The hash is then displayed on the browser in a table sorted by most to least popular.
 
 On any character key press, an event handler is triggered that converts the text typed thus far in the enter song text input field into a string. The string is then immediately input into an `autocomplete()` function. The `autocomplete()` function performs a `POST` request with the string to the backend route `/api/getAutocomplete`, returning the songs in the database that match the entry.
 
