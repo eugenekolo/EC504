@@ -1,7 +1,7 @@
 
 # EC504 Advaced Data Structures Project
 Playlist App 
-Eugene Kolo & Brandon Braxton
+Eugene Kolo & Braxton Brewton
 
 # Dependencies
 You must install gradle, or suffer through installing dependencies yourself. 
